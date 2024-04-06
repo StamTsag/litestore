@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String   @unique
+  username   String   @default("Litestore User")
+  avatar     String   @default("")
+  email      String   @unique
+  verified   Boolean  @default(false)
+  password   String
+  createdAt  DateTime @default(now())
+}
+
+model Token {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  token      String
+  identifier String @unique
+}
+
+model Folder {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId   String
+  folderId  String   @unique
+  title     String
+  createdAt DateTime @default(now())
+}
+
+model File {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId   String
+  fileId    String   @unique
+  folderId  String
+  name      String
+  size      Int
+  url       String
+  type      String
+  createdAt DateTime @default(now())
+  width     Int
+  height    Int
+}
