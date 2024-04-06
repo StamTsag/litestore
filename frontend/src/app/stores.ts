@@ -57,6 +57,7 @@ export interface SelectedFile {
   height: number;
 }
 
+export const hasToken = writable<boolean>(false);
 export const authenticated = writable<boolean>(false);
 export const userData = writable<UserData>();
 export const sideOption = writable<SideOption>(SideOption.Home);

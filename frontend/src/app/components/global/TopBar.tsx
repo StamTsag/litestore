@@ -1,7 +1,9 @@
 "use client";
 
+import { hasToken } from "@/app/stores";
 import { Button, Typography, styled } from "@mui/material";
 import Link from "next/link";
+import { useReadable } from "react-use-svelte-store";
 
 const BarButton = styled(Button)({
   marginLeft: 5,
@@ -9,6 +11,8 @@ const BarButton = styled(Button)({
 });
 
 export default function TopBar() {
+  const $hasToken = useReadable(hasToken);
+
   return (
     <div className="mobile:w-screen mobile:rounded-none flex items-center fixed top-0 right-0 left-0 w-[50%] m-auto rounded shadow-bg-white backdrop-blur-lg p-2 select-none">
       <Link href="/">
@@ -24,7 +28,7 @@ export default function TopBar() {
 
       <span className="flex-1"></span>
 
-      {!localStorage.getItem("token") && (
+      {!$hasToken && (
         <Link href="/auth">
           <BarButton variant="outlined">Try it out</BarButton>
         </Link>

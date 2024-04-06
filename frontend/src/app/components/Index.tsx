@@ -2,6 +2,8 @@
 
 import { Button, Typography, styled } from "@mui/material";
 import Link from "next/link";
+import { useWritable } from "react-use-svelte-store";
+import { hasToken } from "../stores";
 import { useEffect } from "react";
 
 const TextContentStyled = styled(Typography)({
@@ -37,6 +39,13 @@ const ButtonContent = styled(Button)({
 });
 
 export default function Index() {
+  const [$hasToken, setHasToken] = useWritable(hasToken);
+
+  useEffect(() => {
+    // @ts-ignore
+    setHasToken(localStorage.getItem("token")?.length > 0);
+  });
+
   return (
     <div className="fixed flex flex-col items-center justify-center top-0 right-0 left-0 bottom-0 w-screen m-auto h-max select-none">
       <TextContentStyled
@@ -79,7 +88,7 @@ export default function Index() {
         As simple as it gets
       </TextContent>
 
-      <Link href={`/${localStorage.getItem("token") ? "home" : "auth"}`}>
+      <Link href={`/${$hasToken ? "home" : "auth"}`}>
         <ButtonContent
           sx={{
             fontSize: {
@@ -90,7 +99,7 @@ export default function Index() {
           }}
           variant="contained"
         >
-          {localStorage.getItem("token") ? "Go to home" : "Try it out"}
+          {$hasToken ? "Go to home" : "Try it out"}
         </ButtonContent>
       </Link>
     </div>

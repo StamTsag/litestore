@@ -1,3 +1,5 @@
+"use client";
+
 import Background from "./components/global/Background";
 import TopBar from "./components/global/TopBar";
 import Index from "./components/Index";
