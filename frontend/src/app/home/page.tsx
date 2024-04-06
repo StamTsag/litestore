@@ -36,21 +36,10 @@ export default function RouteHome() {
       })
     ).json();
 
-    // Fetch self identifier
-    const identifier = (
-      await (
-        await fetch("api/me", {
-          headers: {
-            Authorization: localStorage.getItem("token") as string,
-          },
-        })
-      ).json()
-    ).identifier as string;
-
     // Get self data
     const userData = (
       await (
-        await fetch(`api/user/${identifier}`, {
+        await fetch("api/me", {
           headers: {
             Authorization: localStorage.getItem("token") as string,
           },
@@ -59,7 +48,7 @@ export default function RouteHome() {
     ).profileData as UserData;
 
     // Invalid token, re-auth
-    if (res.failure || res.errors || !identifier || !userData) {
+    if (res.failure || res.errors || !userData) {
       localStorage.clear();
 
       router.replace("/auth");

@@ -8,7 +8,7 @@ import express from "express";
 // Middleware
 import { sendError, validateToken } from "./utils";
 import { deleteAccount, login, loginToken, register } from "./endpoints/auth";
-import { fetchMe, fetchProfile } from "./endpoints/profiles";
+import { fetchMe } from "./endpoints/profiles";
 import {
   createFolder,
   deleteFile,
@@ -48,7 +48,6 @@ app.use(async (req, res, next) => {
 
 // Profiles
 app.get("/me", fetchMe);
-app.get("/user/:userId", fetchProfile);
 
 // Filesystem
 

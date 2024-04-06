@@ -39,19 +39,8 @@ describe("Authentication", () => {
 });
 
 describe("Profiles", () => {
-  it("Fetch self identifier", async () => {
+  it("Fetch self data", async () => {
     const res = await request.get("/me").set("Authorization", token);
-
-    expect(res.status).toEqual(200);
-    expect(res.type).toEqual(expect.stringContaining("json"));
-    expect(res.body).toHaveProperty("identifier");
-    expect(res.body.identifier).toEqual(identifier);
-  });
-
-  it("Fetch profile data", async () => {
-    const res = await request
-      .get(`/user/${identifier}`)
-      .set("Authorization", token);
 
     expect(res.status).toEqual(200);
     expect(res.type).toEqual(expect.stringContaining("json"));
