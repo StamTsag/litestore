@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
+import { configDotenv } from "dotenv";
 import ImageKit from "imagekit";
+
+configDotenv();
 
 // Prisma ORM setup
 export const prismaClient = new PrismaClient();
