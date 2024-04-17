@@ -3,13 +3,16 @@ import {
   Folder,
   SelectedFile,
   SideOption,
+  creatingFolder,
   currentFolderId,
   files,
   folderCache,
   folders,
+  isMobile,
   isUploadingFiles,
   selectedFiles,
   sideOption,
+  uploadingFiles,
 } from "@/app/stores";
 import {
   AttachFile,
@@ -38,8 +41,8 @@ import {
   styled,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
-import { useWritable } from "react-use-svelte-store";
+import { FormEvent, useEffect, useState } from "react";
+import { useReadable, useWritable } from "react-use-svelte-store";
 import SelectedFileItem from "./SelectedFileItem";
 import { v4 } from "uuid";
 import ImageKit from "imagekit-javascript";
@@ -71,8 +74,10 @@ const activeSx: SxProps<Theme> = {
 
 export default function SideOptions() {
   const router = useRouter();
-  const [$creatingFolder, setCreatingFolder] = useState(false);
-  const [$uploadingFiles, setUploadingFiles] = useState(false);
+
+  const $isMobile = useReadable(isMobile);
+  const [$creatingFolder, setCreatingFolder] = useWritable(creatingFolder);
+  const [$uploadingFiles, setUploadingFiles] = useWritable(uploadingFiles);
   const [$sideOption, setSideOption] = useWritable(sideOption);
   const [$currentFolderId, setCurrentFolderId] = useWritable(currentFolderId);
   const [$folders, setFolders] = useWritable(folders);
@@ -462,94 +467,112 @@ export default function SideOptions() {
     setFiles([]);
   };
 
+  useEffect(() => {
+    uploadingFiles.subscribe((val) => {
+      if (val) addDropListener();
+    });
+  }, []);
+
   return (
-    <div className="flex flex-col items-center min-w-[200px] w-[200px] h-screen border-r pt-2">
-      <SideButton
-        onClick={handleHome}
-        sx={$sideOption == SideOption.Home && !$currentFolderId ? activeSx : {}}
-      >
-        <HomeMax
-          sx={{
-            fill:
-              $sideOption == SideOption.Home && !$currentFolderId
-                ? "white"
-                : "00afef",
-            marginRight: 1,
-          }}
-        />
-
-        <Typography
-          sx={{
-            fontSize: {
-              xs: "0.9rem",
-              sm: "0.9rem",
-              md: "1rem",
-            },
-          }}
-          textTransform="none"
-          color={
-            $sideOption == SideOption.Home && !$currentFolderId
-              ? "white"
-              : "black"
-          }
-        >
-          Home
-        </Typography>
-      </SideButton>
-
-      <Divider
-        orientation="horizontal"
-        sx={{ height: "1px", width: "90%", margin: 1 }}
-      />
-
-      {$sideOption == SideOption.Home && (
+    <div
+      className={`flex flex-col items-center min-w-[${
+        !$isMobile ? "200px" : "0px"
+      }] w-[${!$isMobile ? "200px" : "0px"}] h-screen border-r pt-2`}
+    >
+      {!$isMobile && (
         <>
-          {!$currentFolderId ? (
-            <SideButton onClick={handleCreateFolder}>
-              <CreateNewFolderOutlined
-                sx={{
-                  fill: "00afef",
-                  marginRight: 1,
-                }}
-              />
+          <SideButton
+            onClick={handleHome}
+            sx={
+              $sideOption == SideOption.Home && !$currentFolderId
+                ? activeSx
+                : {}
+            }
+          >
+            <HomeMax
+              sx={{
+                fill:
+                  $sideOption == SideOption.Home && !$currentFolderId
+                    ? "white"
+                    : "00afef",
+                marginRight: 1,
+              }}
+            />
 
-              <Typography
-                sx={{
-                  fontSize: {
-                    xs: "0.9rem",
-                    sm: "0.9rem",
-                    md: "1rem",
-                  },
-                }}
-                textTransform="none"
-                color="black"
-              >
-                New folder
-              </Typography>
-            </SideButton>
-          ) : (
-            <SideButton onClick={handleUploadFiles}>
-              <UploadFileOutlined
-                sx={{
-                  fill: "00afef",
-                  marginRight: 1,
-                }}
-              />
+            <Typography
+              sx={{
+                fontSize: {
+                  xs: "0.9rem",
+                  sm: "0.9rem",
+                  md: "1rem",
+                },
+              }}
+              textTransform="none"
+              color={
+                $sideOption == SideOption.Home && !$currentFolderId
+                  ? "white"
+                  : "black"
+              }
+            >
+              Home
+            </Typography>
+          </SideButton>
 
-              <Typography
-                sx={{
-                  fontSize: {
-                    xs: "0.9rem",
-                    sm: "0.9rem",
-                    md: "1rem",
-                  },
-                }}
-                textTransform="none"
-                color="black"
-              >
-                Upload files
-              </Typography>
-            </SideButton>
+          <Divider
+            orientation="horizontal"
+            sx={{ height: "1px", width: "90%", margin: 1 }}
+          />
+
+          {$sideOption == SideOption.Home && (
+            <>
+              {!$currentFolderId ? (
+                <SideButton onClick={handleCreateFolder}>
+                  <CreateNewFolderOutlined
+                    sx={{
+                      fill: "00afef",
+                      marginRight: 1,
+                    }}
+                  />
+
+                  <Typography
+                    sx={{
+                      fontSize: {
+                        xs: "0.9rem",
+                        sm: "0.9rem",
+                        md: "1rem",
+                      },
+                    }}
+                    textTransform="none"
+                    color="black"
+                  >
+                    New folder
+                  </Typography>
+                </SideButton>
+              ) : (
+                <SideButton onClick={handleUploadFiles}>
+                  <UploadFileOutlined
+                    sx={{
+                      fill: "00afef",
+                      marginRight: 1,
+                    }}
+                  />
+
+                  <Typography
+                    sx={{
+                      fontSize: {
+                        xs: "0.9rem",
+                        sm: "0.9rem",
+                        md: "1rem",
+                      },
+                    }}
+                    textTransform="none"
+                    color="black"
+                  >
+                    Upload files
+                  </Typography>
+                </SideButton>
+              )}
+            </>
           )}
         </>
       )}
@@ -666,23 +689,6 @@ export default function SideOptions() {
                 }}
               >
                 No files selected
-              </Typography>
-
-              <Typography
-                sx={{
-                  fontSize: {
-                    xs: "0.8rem",
-                    sm: "0.8rem",
-                    md: "0.9rem",
-                  },
-                  fontWeight: 600,
-                  transform: "translateY(30px)",
-                  color: "green",
-                  transition: "150ms",
-                }}
-                id="file-drop"
-              >
-                Drop files to select
               </Typography>
             </>
           ) : (

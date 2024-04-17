@@ -2,7 +2,6 @@ import {
   folders,
   files,
   selectedFolder,
-  selectedFile,
   isLoadingFiles,
   currentFolderId,
   sideOption,
@@ -21,16 +20,12 @@ export default function ContentView() {
   const $isLoadingFiles = useReadable(isLoadingFiles);
 
   const [_, setSelectedFolder] = useWritable(selectedFolder);
-  const [__, setSelectedFile] = useWritable(selectedFile);
   const $currentFolderId = useReadable(currentFolderId);
   const $sideOption = useReadable(sideOption);
 
   function resetSelection() {
     // @ts-ignore
     setSelectedFolder(undefined);
-
-    // @ts-ignore
-    setSelectedFile(undefined);
   }
 
   return (
@@ -67,9 +62,8 @@ export default function ContentView() {
         <div className="fixed top-0 right-0 left-0 bottom-0 w-max m-auto flex flex-col items-center justify-center select-none">
           <NoteOutlined
             sx={{
-              width: 100,
-              height: 100,
-              fill: "#00afef",
+              width: 128,
+              height: 128,
             }}
           />
           <Typography
@@ -81,7 +75,6 @@ export default function ContentView() {
               },
               fontWeight: 800,
               textAlign: "center",
-              color: "#00a0ef",
               textTransform: "uppercase",
             }}
           >

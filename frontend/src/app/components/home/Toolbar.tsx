@@ -1,12 +1,27 @@
 "use client";
 
-import { currentFolderId, files, userData } from "@/app/stores";
+import {
+  SideOption,
+  creatingFolder,
+  currentFolderId,
+  files,
+  isMobile,
+  sideOption,
+  uploadingFiles,
+  userData,
+} from "@/app/stores";
 import { formatBytes } from "@/app/utils";
 import {
+  CreateNewFolderOutlined,
+  DragHandle,
+  HomeMax,
+  Inbox,
+  Mail,
   MeetingRoom,
   NoAccounts,
   PieChart,
   SupervisedUserCircle,
+  UploadFileOutlined,
 } from "@mui/icons-material";
 import {
   Avatar,
@@ -27,14 +42,44 @@ import {
   DialogActions,
   CircularProgress,
   TextField,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Box,
+  SwipeableDrawer,
+  Theme,
+  SxProps,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { useReadable, useWritable } from "react-use-svelte-store";
 
+const SideButton = styled(Button)({
+  width: "90%",
+  borderRadius: 7,
+  justifyContent: "start",
+  margin: 0.5,
+  marginBottom: 3,
+  marginTop: 3,
+});
+
 const TextFieldStyled = styled(TextField)({
   marginTop: 6,
 });
+
+const activeSx: SxProps<Theme> = {
+  background: "#00afef",
+  ":hover": {
+    background: "#00a0ef",
+  },
+  ":active": {
+    background: "#00a0ef",
+    color: "white",
+  },
+};
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -95,9 +140,13 @@ const StyledMenu = styled((props: MenuProps) => (
 
 export default function Toolbar() {
   const router = useRouter();
+
+  const $isMobile = useReadable(isMobile);
   const $userData = useReadable(userData);
-  const [_, setFiles] = useWritable(files);
-  const [__, setCurrentFolderId] = useWritable(currentFolderId);
+  const [_, setCreatingFolder] = useWritable(creatingFolder);
+  const [__, setUploadingFiles] = useWritable(uploadingFiles);
+  const [___, setFiles] = useWritable(files);
+  const [$currentFolderId, setCurrentFolderId] = useWritable(currentFolderId);
   const [$viewingUsage, setViewingUsage] = useState(false);
   const [$usageLoaded, setUsageLoaded] = useState(false);
   const [$totalUsage, setTotalUsage] = useState(0);
@@ -105,16 +154,46 @@ export default function Toolbar() {
   const [$terminating, setTerminating] = useState(false);
   const [$terminatingError, setTerminatingError] = useState("");
   const [$terminatingLoading, setTerminatingLoading] = useState(false);
+  const [$sideOption, setSideOption] = useWritable(sideOption);
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-  const openMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setMenuAnchor(event.currentTarget);
+  function toggleDrawer() {
+    setDrawerOpen(!drawerOpen);
+  }
+
+  const handleHome = () => {
+    setSideOption(SideOption.Home);
+
+    router.replace("/home");
+
+    // @ts-ignore
+    setCurrentFolderId(undefined);
+
+    setFiles([]);
   };
 
-  const closeMenu = () => {
-    setMenuAnchor(null);
+  const handleCreateFolder = () => {
+    setCreatingFolder(true);
+
+    setTimeout(() => {
+      (document.getElementById("folder-title") as HTMLInputElement)?.focus();
+    }, 0);
   };
+
+  const handleUploadFiles = () => {
+    setUploadingFiles(true);
+  };
+
+  // @ts-ignore
+  function openMenu(event: MouseEvent<HTMLElement>) {
+    setMenuAnchor(event.currentTarget);
+  }
+
+  function closeMenu() {
+    setMenuAnchor(null);
+  }
 
   function handleRoot() {
     router.replace("/home");
@@ -125,7 +204,7 @@ export default function Toolbar() {
     setCurrentFolderId(undefined);
   }
 
-  const handleShowUsage = async () => {
+  async function handleShowUsage() {
     closeMenu();
 
     setViewingUsage(true);
@@ -145,9 +224,9 @@ export default function Toolbar() {
     setUsagePercentage(Math.round((resJson.totalUsage / 500000000) * 100));
 
     setUsageLoaded(true);
-  };
+  }
 
-  const handleCloseUsage = () => {
+  function handleCloseUsage() {
     setViewingUsage(false);
 
     setTimeout(() => {
@@ -155,21 +234,21 @@ export default function Toolbar() {
       setUsagePercentage(0);
       setUsageLoaded(false);
     }, 500);
-  };
+  }
 
-  const handleShowTerminating = async () => {
+  function handleShowTerminating() {
     closeMenu();
 
     setTerminating(true);
-  };
+  }
 
-  const handleCloseTerminating = () => {
+  function handleCloseTerminating() {
     setTerminating(false);
 
     setTimeout(() => {
       setTerminatingError("");
     }, 250);
-  };
+  }
 
   async function terminate() {
     if ($terminatingLoading) return;
@@ -217,6 +296,30 @@ export default function Toolbar() {
 
   return (
     <div className="mobile:p-0 mobile:pl-2 mobile:pr-2 mobile:justify-center bg-transparent flex items-center m-auto border-b backdrop-blur-lg p-2 select-none">
+      {$isMobile && (
+        <IconButton
+          sx={{
+            width: 48,
+            height: 48,
+            fill: "#00afef",
+            marginLeft: 2,
+            marginRight: 2,
+            cursor: "pointer",
+            padding: 2,
+          }}
+          onClick={toggleDrawer}
+        >
+          <DragHandle
+            sx={{
+              width: 36,
+              height: 36,
+              fill: "#00afef",
+              cursor: "pointer",
+            }}
+          />
+        </IconButton>
+      )}
+
       <img
         onClick={handleRoot}
         src="/litestore.svg"
@@ -245,6 +348,123 @@ export default function Toolbar() {
           </StyledBadge>
         </IconButton>
       </Tooltip>
+
+      <SwipeableDrawer
+        open={drawerOpen}
+        onOpen={toggleDrawer}
+        onClose={toggleDrawer}
+      >
+        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer}>
+          <div className="flex items-center ml-2 pb-6 pt-2">
+            <img
+              onClick={handleRoot}
+              src="/litestore.svg"
+              className="min-w-[48px] w-[48px] min-h-[48px] h-[48[x] hover:animate-twirl cursor-pointer"
+              draggable={false}
+            />
+
+            <Typography fontWeight={400} variant="h6" ml={1}>
+              Litestore
+            </Typography>
+          </div>
+
+          <div className="flex flex-col w-full pl-2">
+            <SideButton
+              onClick={handleHome}
+              sx={
+                $sideOption == SideOption.Home && !$currentFolderId
+                  ? activeSx
+                  : {}
+              }
+            >
+              <HomeMax
+                sx={{
+                  fill:
+                    $sideOption == SideOption.Home && !$currentFolderId
+                      ? "white"
+                      : "00afef",
+                  marginRight: 1,
+                }}
+              />
+
+              <Typography
+                sx={{
+                  fontSize: {
+                    xs: "0.9rem",
+                    sm: "0.9rem",
+                    md: "1rem",
+                  },
+                }}
+                textTransform="none"
+                color={
+                  $sideOption == SideOption.Home && !$currentFolderId
+                    ? "white"
+                    : "black"
+                }
+              >
+                Home
+              </Typography>
+            </SideButton>
+
+            <Divider
+              orientation="horizontal"
+              sx={{ height: "1px", width: "75%", margin: 1, marginTop: 1.5 }}
+            />
+
+            {$sideOption == SideOption.Home && (
+              <>
+                {!$currentFolderId ? (
+                  <SideButton onClick={handleCreateFolder}>
+                    <CreateNewFolderOutlined
+                      sx={{
+                        fill: "00afef",
+                        marginRight: 1,
+                      }}
+                    />
+
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          xs: "0.9rem",
+                          sm: "0.9rem",
+                          md: "1rem",
+                        },
+                      }}
+                      textTransform="none"
+                      color="black"
+                    >
+                      New folder
+                    </Typography>
+                  </SideButton>
+                ) : (
+                  <SideButton onClick={handleUploadFiles}>
+                    <UploadFileOutlined
+                      sx={{
+                        fill: "00afef",
+                        marginRight: 1,
+                      }}
+                    />
+
+                    <Typography
+                      sx={{
+                        fontSize: {
+                          xs: "0.9rem",
+                          sm: "0.9rem",
+                          md: "1rem",
+                        },
+                      }}
+                      textTransform="none"
+                      color="black"
+                    >
+                      Upload files
+                    </Typography>
+                  </SideButton>
+                )}
+              </>
+            )}
+          </div>
+        </Box>
+      </SwipeableDrawer>
 
       <StyledMenu
         sx={{ mt: "45px" }}

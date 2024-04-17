@@ -190,7 +190,7 @@ export default function FolderItem({
             borderRadius: "0px",
           },
           "&& .MuiTouchRipple-rippleVisible": {
-            animationDuration: "1000ms",
+            animationDuration: "750ms",
           },
         }}
         onClick={openFile}
@@ -550,45 +550,30 @@ export default function FolderItem({
               <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
                 <Page pageNumber={$pageNumber} />
               </Document>
-              <div className="select-none fixed bottom-4 right-0 left-0 m-auto z-1 bg-[#ffffff] flex items-center justify-center w-[300px] p-3 rounded">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  className="mr-6 cursor-pointer"
-                  onClick={() => setPageNumber(Math.max($pageNumber - 1, 1))}
-                >
-                  <path
-                    fill="#000000"
-                    d="m8.165 11.63l6.63-6.43C15.21 4.799 16 5.042 16 5.57v12.86c0 .528-.79.771-1.205.37l-6.63-6.43a.499.499 0 0 1 0-.74Z"
-                  />
-                </svg>
-
+              <div className="select-none fixed bottom-3 right-0 left-0 m-auto z-1 bg-dark-half flex items-center justify-center w-max p-2 pl-7 pr-7 rounded-full">
                 <Typography
                   sx={{
-                    fontSize: "1.2rem",
+                    fontSize: "0.9rem",
+                    color: "white",
                   }}
                 >
-                  Page {$pageNumber} of {$numPages}
-                </Typography>
+                  Page
+                  <input
+                    placeholder={$pageNumber.toString()}
+                    type="number"
+                    maxLength={3}
+                    className="w-[40px] bg-dark-half rounded-max ml-2 mr-2 text-center"
+                    onChange={(e) => {
+                      const target = Number(e.target.value);
 
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  className="ml-6 cursor-pointer"
-                  onClick={() =>
-                    // @ts-ignore
-                    setPageNumber(Math.min($pageNumber + 1, $numPages))
-                  }
-                >
-                  <path
-                    fill="currentColor"
-                    d="M15.835 11.63L9.205 5.2C8.79 4.799 8 5.042 8 5.57v12.86c0 .528.79.771 1.205.37l6.63-6.43a.498.498 0 0 0 0-.74Z"
+                      setPageNumber(target >= 1 ? target : 1);
+                    }}
+                    max={$numPages}
+                    min={1}
+                    defaultValue={1}
                   />
-                </svg>
+                  of {$numPages}
+                </Typography>
               </div>
             </div>
           )}

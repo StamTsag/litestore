@@ -61,6 +61,7 @@ export const hasToken = writable<boolean>(false);
 export const authenticated = writable<boolean>(false);
 export const userData = writable<UserData>();
 export const sideOption = writable<SideOption>(SideOption.Home);
+export const isMobile = writable<boolean>(false);
 
 export const folders = writable<Folder[]>([]);
 export const files = writable<File[]>([]);
@@ -69,9 +70,12 @@ export const isLoadingFiles = writable(false);
 export const currentFolderId = writable("");
 
 export const selectedFolder = writable<Folder>();
-export const selectedFile = writable<File>();
 
 export const selectedFiles = writable<SelectedFile[]>([]);
 export const isUploadingFiles = writable(false);
 
 export const folderCache = writable<{ [key: string]: File[] }[]>([]);
+
+// For Dialogs
+export const creatingFolder = writable<boolean>(false);
+export const uploadingFiles = writable<boolean>(false);

@@ -14,6 +14,7 @@ const config: Config = {
         "folder-primary": "#f0f0f0",
         "file-bg": "#eaF6Ff",
         "file-bg-active": "#eaF8Ff",
+        "dark-half": "rgb(20, 20, 20, 0.9)",
       },
 
       boxShadow: {

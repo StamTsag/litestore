@@ -2,7 +2,14 @@
 
 import Home from "../components/Home";
 import { useWritable } from "react-use-svelte-store";
-import { Folder, UserData, authenticated, folders, userData } from "../stores";
+import {
+  Folder,
+  UserData,
+  authenticated,
+  folders,
+  isMobile,
+  userData,
+} from "../stores";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Toolbar from "../components/home/Toolbar";
@@ -15,6 +22,7 @@ export default function RouteHome() {
   const [$authenticated, setAuthenticated] = useWritable(authenticated);
   const [_, setUserData] = useWritable(userData);
   const [__, setFolders] = useWritable(folders);
+  const [___, setIsMobile] = useWritable(isMobile);
 
   // TODO: JWT
   async function loginToken() {
@@ -78,6 +86,10 @@ export default function RouteHome() {
     if (effectRan) return;
 
     effectRan = true;
+
+    const userAgent = window.navigator.userAgent.toLowerCase();
+
+    setIsMobile(userAgent.includes("android") || userAgent.includes("iphone"));
 
     if (!localStorage.getItem("token")) {
       router.replace("/auth");
