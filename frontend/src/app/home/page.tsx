@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Toolbar from "../components/home/Toolbar";
 import Loading from "../components/global/Loading";
+import Cookies from "js-cookie";
 
 export default function RouteHome() {
   let effectRan = false;
@@ -24,40 +25,21 @@ export default function RouteHome() {
   const [__, setFolders] = useWritable(folders);
   const [___, setIsMobile] = useWritable(isMobile);
 
-  // TODO: JWT
-  async function loginToken() {
-    // No token, auth
-    if (!localStorage.getItem("token")) {
-      router.replace("/auth");
-      return;
-    }
-
-    const res = await (
-      await fetch("api/loginToken", {
-        method: "POST",
-        body: JSON.stringify({
-          token: localStorage.getItem("token"),
-        }),
-        headers: {
-          "content-type": "application/json",
-        },
-      })
-    ).json();
-
+  async function fetchUserData() {
     // Get self data
     const userData = (
       await (
         await fetch("api/me", {
           headers: {
-            Authorization: localStorage.getItem("token") as string,
+            Authorization: Cookies.get("litestore_token") as string,
           },
         })
       ).json()
     ).profileData as UserData;
 
     // Invalid token, re-auth
-    if (res.failure || res.errors || !userData) {
-      localStorage.clear();
+    if (!userData) {
+      Cookies.remove("litestore_token");
 
       router.replace("/auth");
 
@@ -73,7 +55,7 @@ export default function RouteHome() {
       await (
         await fetch(`api/folders`, {
           headers: {
-            Authorization: localStorage.getItem("token") as string,
+            Authorization: Cookies.get("litestore_token") as string,
           },
         })
       ).json()
@@ -91,11 +73,13 @@ export default function RouteHome() {
 
     setIsMobile(userAgent.includes("android") || userAgent.includes("iphone"));
 
-    if (!localStorage.getItem("token")) {
+    // No token, auth
+    if (!Cookies.get("litestore_token")) {
       router.replace("/auth");
+      return;
     }
 
-    loginToken().then((data) => {
+    fetchUserData().then((data) => {
       if (!data) return;
 
       setUserData({ ...(data as UserData) });

@@ -47,6 +47,7 @@ import SelectedFileItem from "./SelectedFileItem";
 import { v4 } from "uuid";
 import ImageKit from "imagekit-javascript";
 import { getFileType } from "@/app/utils";
+import Cookies from "js-cookie";
 
 const SideButton = styled(Button)({
   width: "90%",
@@ -119,10 +120,10 @@ export default function SideOptions() {
     const res = await fetch("api/folders", {
       method: "POST",
       body: JSON.stringify({
-        token: localStorage.getItem("token"),
         title,
       }),
       headers: {
+        Authorization: Cookies.get("litestore_token") as string,
         "content-type": "application/json",
       },
     });
@@ -308,10 +309,7 @@ export default function SideOptions() {
     // Get imagekit basic options
     const authRes = (await (
       await fetch("uploadInit", {
-        method: "POST",
-        body: JSON.stringify({
-          token: localStorage.getItem("token"),
-        }),
+        method: "GET",
         headers: {
           "content-type": "application/json",
         },
@@ -336,7 +334,7 @@ export default function SideOptions() {
         await fetch("upload", {
           method: "POST",
           body: JSON.stringify({
-            token: localStorage.getItem("token"),
+            token: Cookies.get("litestore_token") as string,
             folderId: $currentFolderId,
           }),
           headers: {
@@ -404,7 +402,6 @@ export default function SideOptions() {
         const fileRes = await fetch(`api/files/${$currentFolderId}`, {
           method: "POST",
           body: JSON.stringify({
-            token: localStorage.getItem("token"),
             fileId: file.id,
             name: file.filename,
             size: file.size,
@@ -413,6 +410,7 @@ export default function SideOptions() {
             height: file.height,
           }),
           headers: {
+            Authorization: Cookies.get("litestore_token") as string,
             "content-type": "application/json",
           },
         });

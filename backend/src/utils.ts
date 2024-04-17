@@ -1,11 +1,4 @@
 import { v4 } from "uuid";
-import { tokenSchema } from "./schemas";
-import { prismaClient } from "./vars";
-import { Request } from "express";
-
-interface TokenMappings {
-  [token: string]: string;
-}
 
 type FileType =
   | "image"
@@ -40,29 +33,6 @@ const executable = "apk, bat, exe, jar, msi, wsf, ini".split(", ");
 
 const font = "fnt, fon, otf, ttf".split(", ");
 
-const tokenMappings: TokenMappings[] = [];
-
-export function getToken(req: Request): string {
-  // In GET requests the token is in the Authorisation header
-  return getParams(req, ["token"]).token || req.headers.authorization;
-}
-
-export function getTokens(): TokenMappings[] {
-  return tokenMappings;
-}
-
-export function addToken(token: string, identifier: string): void {
-  tokenMappings[token] = identifier;
-}
-
-export function getIdentifier(token: string): string {
-  return tokenMappings[token];
-}
-
-export function getIdentifierReq(req: Request) {
-  return tokenMappings[getToken(req)];
-}
-
 export function getV4(): string {
   return v4().replace(/-/, "");
 }
@@ -80,47 +50,6 @@ export function getParams(
   });
 
   return result;
-}
-
-export async function validateToken(req: Request): Promise<{
-  [key: string]: any;
-}> {
-  const token = getToken(req);
-
-  const tokenVal = tokenSchema.validate({ token });
-
-  if (tokenVal.length != 0) {
-    return {
-      error: true,
-      failure: "Invalid token format",
-    };
-  }
-
-  // Avoid fetching if already available
-  if (token in getTokens()) {
-    return { identifier: getIdentifier(token) };
-  }
-
-  const tokenObj = await prismaClient.token.findFirst({
-    where: {
-      token,
-    },
-
-    select: {
-      identifier: true,
-    },
-  });
-
-  if (!tokenObj) {
-    return {
-      error: true,
-      failure: "Invalid token",
-    };
-  }
-
-  addToken(token, tokenObj.identifier);
-
-  return tokenObj;
 }
 
 export function sendError(

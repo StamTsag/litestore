@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useWritable } from "react-use-svelte-store";
 import { hasToken } from "../stores";
 import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 const TextContentStyled = styled(Typography)({
   background: `-webkit-linear-gradient(
@@ -43,7 +44,7 @@ export default function Index() {
 
   useEffect(() => {
     // @ts-ignore
-    setHasToken(localStorage.getItem("token")?.length > 0);
+    setHasToken(Cookies.get("litestore_token"));
   });
 
   return (

@@ -1,4 +1,4 @@
-import { EzierValidatorStringSchema, StringSchema } from "@ezier/validate";
+import { EzierValidatorStringSchema } from "@ezier/validate";
 
 export const identifierSchema: { identifier: EzierValidatorStringSchema } = {
   identifier: {
@@ -19,12 +19,6 @@ export const passwordSchema: { password: EzierValidatorStringSchema } = {
     minLength: 8,
   },
 };
-
-export const tokenSchema = new StringSchema({
-  token: {
-    type: "uuid",
-  },
-});
 
 export const folderIdSchema: { folderId: EzierValidatorStringSchema } = {
   folderId: {

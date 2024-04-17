@@ -1,21 +1,11 @@
-import {
-  File,
-  currentFolderId,
-  files,
-  folderCache,
-  userData,
-} from "@/app/stores";
+import { File, currentFolderId, files, folderCache } from "@/app/stores";
 import { formatBytes } from "@/app/utils";
 import {
   AudioFile,
   Delete,
   DeleteForever,
   Download,
-  Folder as FolderIcon,
-  FolderShared,
   FolderZip,
-  FormatItalicOutlined,
-  Slideshow,
   TextFields,
   VideoFile,
   Visibility,
@@ -29,18 +19,16 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
-  IconButton,
   Menu,
   MenuItem,
-  TextField,
   Typography,
-  styled,
 } from "@mui/material";
 import moment from "moment";
 import { FormEvent, useEffect, useState } from "react";
 import { useReadable, useWritable } from "react-use-svelte-store";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { pdfjs, Document, Page } from "react-pdf";
+import Cookies from "js-cookie";
 
 export default function FolderItem({
   fileId,
@@ -126,7 +114,7 @@ export default function FolderItem({
     const res = await fetch(`api/files/${$currentFolderId}/${fileId}`, {
       method: "DELETE",
       headers: {
-        Authorization: localStorage.getItem("token") as string,
+        Authorization: Cookies.get("litestore_token") as string,
       },
     });
 

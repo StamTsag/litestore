@@ -5,21 +5,6 @@ export async function POST(request: Request) {
 
   const apiURL = process.env.LITESTORE_API_URL;
 
-  // Verify token
-  const tokenRes = await fetch(`${apiURL}/loginToken`, {
-    method: "POST",
-    body: JSON.stringify({
-      token: req.token,
-    }),
-    headers: {
-      "content-type": "application/json",
-    },
-  });
-
-  if (tokenRes.status != 200) {
-    return Response.json({ failure: "Invalid token" });
-  }
-
   // Verify we have access to the folder
   const folderRes = await fetch(`${apiURL}/files/${req.folderId}`, {
     method: "GET",

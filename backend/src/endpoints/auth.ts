@@ -1,16 +1,10 @@
 import { compareSync, hashSync } from "bcrypt";
-import {
-  getParams,
-  getV4,
-  sendError,
-  sendSuccess,
-  validateToken,
-} from "../utils";
-import { v4 } from "uuid";
+import { getParams, getV4, sendError, sendSuccess } from "../utils";
 import { imagekit, prismaClient } from "../vars";
 import { identifierSchema, emailSchema, passwordSchema } from "../schemas";
 import { Request, Response } from "express";
 import { StringSchema } from "@ezier/validate";
+import jwt from "jsonwebtoken";
 
 const registerSchema = new StringSchema({
   ...identifierSchema,
@@ -55,7 +49,7 @@ export async function register(req: Request, res: Response) {
   // Should be unique identifier aswell
   const uniqueRes2 = await prismaClient.account.findFirst({
     where: {
-      identifier: identifier,
+      identifier,
     },
   });
 
@@ -66,20 +60,9 @@ export async function register(req: Request, res: Response) {
   // Create the account
   await prismaClient.account.create({
     data: {
-      identifier: identifier,
+      identifier,
       email,
       password: hashSync(password, 10),
-    },
-  });
-
-  // Create token for subsequent requests
-  // TODO: JWT
-  const token = v4();
-
-  await prismaClient.token.create({
-    data: {
-      token,
-      identifier: identifier,
     },
   });
 
@@ -92,7 +75,18 @@ export async function register(req: Request, res: Response) {
     },
   });
 
-  return sendSuccess(res, { token }, true);
+  const token = jwt.sign({ id: identifier }, process.env.JWT_SECRET, {
+    algorithm: "HS256",
+  });
+
+  const finalDict = { token };
+
+  // Info for tests
+  if (process.env.NODE_ENV == "test") {
+    finalDict["id"] = identifier;
+  }
+
+  return sendSuccess(res, finalDict, true);
 }
 
 export async function login(req: Request, res: Response) {
@@ -127,41 +121,30 @@ export async function login(req: Request, res: Response) {
     return sendError(400, res, "Invalid password");
   }
 
-  // Get account token
-  const tokenObj = await prismaClient.token.findFirst({
-    where: {
-      identifier: accountObj.identifier,
-    },
+  // Send JWT token
+  const token = jwt.sign(
+    { id: accountObj.identifier },
+    process.env.JWT_SECRET,
+    {
+      algorithm: "HS256",
+    }
+  );
 
-    select: {
-      token: true,
-    },
-  });
+  const finalDict = { token };
 
-  return sendSuccess(res, { token: tokenObj.token }, true);
-}
-
-export async function loginToken(req: Request, res: Response) {
-  const tokenVal = await validateToken(req);
-
-  if (tokenVal.error) {
-    return sendError(400, res, tokenVal.failure);
+  // Info for tests
+  if (process.env.NODE_ENV == "test") {
+    finalDict["id"] = accountObj.identifier;
   }
 
-  return sendSuccess(res, "Logged in");
+  return sendSuccess(res, finalDict, true);
 }
 
 export async function deleteAccount(req: Request, res: Response) {
-  const tokenVal = await validateToken(req);
-
-  if (tokenVal.error) {
-    return sendError(400, res, tokenVal.failure);
-  }
-
   // Match password
   const accountObj = await prismaClient.account.findFirst({
     where: {
-      identifier: tokenVal.identifier,
+      identifier: req.userId,
     },
 
     select: {
@@ -223,13 +206,6 @@ export async function deleteAccount(req: Request, res: Response) {
       folderId: {
         in: folderIds,
       },
-    },
-  });
-
-  // Revoke token
-  await prismaClient.token.delete({
-    where: {
-      identifier: tokenVal.identifier,
     },
   });
 

@@ -1,11 +1,5 @@
 import { Request, Response } from "express";
-import {
-  getFileType,
-  getIdentifierReq,
-  getV4,
-  sendError,
-  sendSuccess,
-} from "../utils";
+import { getFileType, getV4, sendError, sendSuccess } from "../utils";
 import {
   imagekit,
   imagekitMaxSize,
@@ -32,7 +26,7 @@ export async function fetchFoldersHome(req: Request, res: Response) {
     {
       folders: await prismaClient.folder.findMany({
         where: {
-          ownerId: getIdentifierReq(req),
+          ownerId: req.userId,
         },
 
         select: {
@@ -60,7 +54,7 @@ export async function createFolder(req: Request, res: Response) {
 
   const folders = await prismaClient.folder.findMany({
     where: {
-      ownerId: getIdentifierReq(req),
+      ownerId: req.userId,
     },
 
     select: {
@@ -82,7 +76,7 @@ export async function createFolder(req: Request, res: Response) {
   const folder = await prismaClient.folder.create({
     data: {
       folderId: getV4(),
-      ownerId: getIdentifierReq(req),
+      ownerId: req.userId,
       title,
     },
 
@@ -129,14 +123,14 @@ export async function renameFolder(req: Request, res: Response) {
   }
 
   // Check accessible
-  if (folder.ownerId != getIdentifierReq(req)) {
+  if (folder.ownerId != req.userId) {
     return sendError(400, res, "You don't have access to this folder");
   }
 
   // Check duplicate
   const folders = await prismaClient.folder.findMany({
     where: {
-      ownerId: getIdentifierReq(req),
+      ownerId: req.userId,
     },
 
     select: {
@@ -191,7 +185,7 @@ export async function deleteFolder(req: Request, res: Response) {
   }
 
   // Check accessible
-  if (folder.ownerId != getIdentifierReq(req)) {
+  if (folder.ownerId != req.userId) {
     return sendError(400, res, "You don't have access to this folder");
   }
 
@@ -244,7 +238,7 @@ export async function fetchFiles(req: Request, res: Response) {
   }
 
   // Check accessible
-  if (folder.ownerId != getIdentifierReq(req)) {
+  if (folder.ownerId != req.userId) {
     return sendError(400, res, "You don't have access to this folder");
   }
 
@@ -254,7 +248,7 @@ export async function fetchFiles(req: Request, res: Response) {
       files: await prismaClient.file.findMany({
         where: {
           folderId,
-          ownerId: getIdentifierReq(req),
+          ownerId: req.userId,
         },
 
         select: {
@@ -323,13 +317,13 @@ export async function uploadFile(req: Request, res: Response) {
   }
 
   // Check accessible
-  if (folder.ownerId != getIdentifierReq(req)) {
+  if (folder.ownerId != req.userId) {
     return sendError(400, res, "You don't have access to this folder");
   }
 
   const files = await prismaClient.file.findMany({
     where: {
-      ownerId: getIdentifierReq(req),
+      ownerId: req.userId,
       folderId,
     },
 
@@ -357,7 +351,7 @@ export async function uploadFile(req: Request, res: Response) {
 
   const folders = await prismaClient.folder.findMany({
     where: {
-      ownerId: getIdentifierReq(req),
+      ownerId: req.userId,
     },
 
     select: {
@@ -390,7 +384,7 @@ export async function uploadFile(req: Request, res: Response) {
 
   const file = await prismaClient.file.create({
     data: {
-      ownerId: getIdentifierReq(req),
+      ownerId: req.userId,
       folderId,
       fileId,
       name,
@@ -450,7 +444,7 @@ export async function deleteFile(req: Request, res: Response) {
   }
 
   // Check accessible
-  if (file.ownerId != getIdentifierReq(req)) {
+  if (file.ownerId != req.userId) {
     return sendError(400, res, "You don't have access to this file");
   }
 
@@ -475,7 +469,7 @@ export async function getTotalUsage(req: Request, res: Response) {
 
   const folders = await prismaClient.folder.findMany({
     where: {
-      ownerId: getIdentifierReq(req),
+      ownerId: req.userId,
     },
 
     select: {

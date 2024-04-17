@@ -56,6 +56,7 @@ import {
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { useReadable, useWritable } from "react-use-svelte-store";
+import Cookies from "js-cookie";
 
 const SideButton = styled(Button)({
   width: "90%",
@@ -213,7 +214,7 @@ export default function Toolbar() {
       method: "GET",
       headers: {
         "content-type": "application/json",
-        Authorization: localStorage.getItem("token") as string,
+        Authorization: Cookies.get("litestore_token") as string,
       },
     });
 
@@ -269,9 +270,9 @@ export default function Toolbar() {
       method: "DELETE",
       body: JSON.stringify({
         password,
-        token: localStorage.getItem("token"),
       }),
       headers: {
+        Authorization: Cookies.get("litestore_token") as string,
         "content-type": "application/json",
       },
     });
@@ -281,14 +282,14 @@ export default function Toolbar() {
 
       setTerminatingError(resJson.failure);
     } else {
-      localStorage.clear();
+      Cookies.remove("litestore_token");
 
       location.href = "/";
     }
   }
 
   function logout() {
-    localStorage.clear();
+    Cookies.remove("litestore_token");
 
     // Don't use router, reset all states with this
     location.href = "/auth";

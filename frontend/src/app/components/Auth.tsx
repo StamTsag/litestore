@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 const ToggleButtonStyled = styled(ToggleButton)({
   width: 250,
@@ -135,8 +136,9 @@ export default function Auth() {
     if (res.failure || res.errors) {
       setError(res.failure || res.errors[0].message);
     } else {
-      // TODO: JWT
-      localStorage.setItem("token", res.token);
+      Cookies.set("litestore_token", `Bearer ${res.token}`, {
+        expires: 7,
+      });
 
       router.push("/home");
     }
@@ -163,15 +165,16 @@ export default function Auth() {
     if (res.failure || res.errors) {
       setError(res.failure || res.errors[0].message);
     } else {
-      // TODO: JWT
-      localStorage.setItem("token", res.token);
+      Cookies.set("litestore_token", `Bearer ${res.token}`, {
+        expires: 7,
+      });
 
       router.push("/home");
     }
   }
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
+    if (Cookies.get("electobox_token")) {
       router.replace("/home");
     }
   });

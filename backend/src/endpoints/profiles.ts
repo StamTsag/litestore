@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { getIdentifierReq, sendSuccess } from "../utils";
+import { sendSuccess } from "../utils";
 import { prismaClient } from "../vars";
 
 export async function fetchMe(req: Request, res: Response) {
   const accountObj = await prismaClient.account.findFirst({
     where: {
-      identifier: getIdentifierReq(req),
+      identifier: req.userId,
     },
 
     select: {

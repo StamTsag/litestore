@@ -14,8 +14,10 @@
 
 - Fill out `.env.example` and rename to `.env`
 
-- `npm run dev`, starts at port 3001
+- `docker compose up -d` to start the Mongo instance locally
+
+- `npm start`, starts at port 3001
 
 ## Testing
 
-- `npm test`
+- `npm test` while running the docker compose instance

@@ -11,12 +11,8 @@ import {
 import {
   Check,
   Delete,
-  DeleteForever,
-  Done,
   Folder as FolderIcon,
-  FormatItalic,
   FormatItalicOutlined,
-  OfflinePin,
 } from "@mui/icons-material";
 import {
   Button,
@@ -35,6 +31,7 @@ import {
 } from "@mui/material";
 import { FormEvent, useState } from "react";
 import { useWritable } from "react-use-svelte-store";
+import Cookies from "js-cookie";
 
 const TextFieldStyled = styled(TextField)({
   marginTop: 6,
@@ -114,7 +111,7 @@ export default function FolderItem(props: any) {
         await (
           await fetch(`api/files/${folder.folderId}`, {
             headers: {
-              Authorization: localStorage.getItem("token") as string,
+              Authorization: Cookies.get("litestore_token") as string,
             },
           })
         ).json()
@@ -172,10 +169,10 @@ export default function FolderItem(props: any) {
     const res = await fetch(`api/folders/rename/${folder.folderId}`, {
       method: "POST",
       body: JSON.stringify({
-        token: localStorage.getItem("token"),
         title,
       }),
       headers: {
+        Authorization: Cookies.get("litestore_token") as string,
         "content-type": "application/json",
       },
     });
@@ -224,7 +221,7 @@ export default function FolderItem(props: any) {
     const res = await fetch(`api/folders/${folder.folderId}`, {
       method: "DELETE",
       headers: {
-        Authorization: localStorage.getItem("token") as string,
+        Authorization: Cookies.get("litestore_token") as string,
       },
     });
 

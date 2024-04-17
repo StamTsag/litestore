@@ -21,12 +21,6 @@ model Account {
   createdAt  DateTime @default(now())
 }
 
-model Token {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  token      String
-  identifier String @unique
-}
-
 model Folder {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   ownerId   String

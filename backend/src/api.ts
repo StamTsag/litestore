@@ -5,9 +5,8 @@ configDotenv();
 
 import express from "express";
 
-// Middleware
-import { sendError, validateToken } from "./utils";
-import { deleteAccount, login, loginToken, register } from "./endpoints/auth";
+// Endpoints
+import { deleteAccount, login, register } from "./endpoints/auth";
 import { fetchMe } from "./endpoints/profiles";
 import {
   createFolder,
@@ -19,6 +18,9 @@ import {
   renameFolder,
   uploadFile,
 } from "./endpoints/filesystem";
+
+// Middleware
+import { verifyJWT } from "./middleware/verifyJWT";
 
 // Target PORT
 const PORT = process.env.PORT || 3001;
@@ -32,19 +34,9 @@ app.use(express.json());
 // Authentication
 app.post("/register", register);
 app.post("/login", login);
-app.post("/loginToken", loginToken);
-app.delete("/login", deleteAccount);
 
-// Validate tokens from now on, all routes that don't need authentication should be placed above
-app.use(async (req, res, next) => {
-  const tokenVal = await validateToken(req);
-
-  if (tokenVal.error) {
-    return sendError(400, res, tokenVal.failure);
-  }
-
-  next();
-});
+// JWT required for the routes below this middleware
+app.use(verifyJWT);
 
 // Profiles
 app.get("/me", fetchMe);
@@ -68,6 +60,7 @@ app.delete("/files/:folderId/:fileId", deleteFile);
 
 // Other
 app.get("/usage", getTotalUsage);
+app.delete("/login", deleteAccount);
 
 // Start the server
 app.listen(PORT, () => {
