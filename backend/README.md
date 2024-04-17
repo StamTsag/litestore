@@ -15,3 +15,7 @@
 - Fill out `.env.example` and rename to `.env`
 
 - `npm run dev`, starts at port 3001
+
+## Testing
+
+- `npm test`
