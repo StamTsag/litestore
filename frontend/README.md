@@ -18,4 +18,4 @@
 
 ## Preview
 
-<img src="https://raw.githubusercontent.com/Shadofer/litestore/main/.github/assets/preview.png" alt='Litestore preview'>
+<img src="https://raw.githubusercontent.com/Shadofer/litestore/master/.github/assets/preview.png" alt='Litestore preview'>
