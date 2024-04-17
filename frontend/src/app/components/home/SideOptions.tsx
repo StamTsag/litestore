@@ -475,9 +475,9 @@ export default function SideOptions() {
 
   return (
     <div
-      className={`flex flex-col items-center min-w-[${
-        !$isMobile ? "200px" : "0px"
-      }] w-[${!$isMobile ? "200px" : "0px"}] h-screen border-r pt-2`}
+      className={`flex flex-col items-center ${!$isMobile && "min-w-[200px]"} ${
+        !$isMobile && "w-[200px]"
+      } ${$isMobile && "min-w-0"} ${$isMobile && "w-0"} h-screen border-r pt-2`}
     >
       {!$isMobile && (
         <>
