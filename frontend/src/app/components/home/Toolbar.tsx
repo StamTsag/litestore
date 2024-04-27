@@ -483,13 +483,6 @@ export default function Toolbar() {
         open={Boolean(menuAnchor)}
         onClose={closeMenu}
       >
-        <MenuItem onClick={closeMenu}>
-          <SupervisedUserCircle />
-          {$userData?.username}
-        </MenuItem>
-
-        <Divider sx={{ opacity: 0.5 }} />
-
         <MenuItem onClick={handleShowUsage}>
           <PieChart />
           Data usage
