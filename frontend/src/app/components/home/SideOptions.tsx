@@ -232,7 +232,7 @@ export default function SideOptions() {
   }
 
   function addFiles(files: File[]) {
-    const newFilesToAdd: SelectedFile[] = [];
+    let requiredFiles = 0;
     let completedFileEntries = 0;
 
     for (const fileIndex in files) {
@@ -245,14 +245,36 @@ export default function SideOptions() {
         continue;
       }
 
-      if (
-        Number(fileIndex) + completedFileEntries + $selectedFiles.length >=
-        200
-      ) {
+      if (Number(fileIndex) + $selectedFiles.length >= 200) {
+        break;
+      }
+
+      requiredFiles++;
+    }
+
+    const newFilesToAdd: SelectedFile[] = [];
+
+    for (const fileIndex in files) {
+      const file = files[fileIndex];
+
+      if (!(file instanceof Blob)) continue;
+
+      // Max 25MB, adjust for proofing
+      if (file.size > 24500000) {
+        continue;
+      }
+
+      if (Number(fileIndex) + $selectedFiles.length >= 200) {
         break;
       }
 
       const reader = new FileReader();
+
+      function checkLoadingDone() {
+        if (completedFileEntries == requiredFiles) {
+          setSelectedFiles([...$selectedFiles, ...newFilesToAdd]);
+        }
+      }
 
       reader.addEventListener("load", async () => {
         if (
@@ -275,6 +297,8 @@ export default function SideOptions() {
             });
 
             completedFileEntries++;
+
+            checkLoadingDone();
           };
         } else {
           newFilesToAdd.push({
@@ -288,17 +312,13 @@ export default function SideOptions() {
           });
 
           completedFileEntries++;
+
+          checkLoadingDone();
         }
       });
 
       reader.readAsDataURL(file);
     }
-
-    setTimeout(() => {
-      if (completedFileEntries == newFilesToAdd.length) {
-        setSelectedFiles([...$selectedFiles, ...newFilesToAdd]);
-      }
-    }, 25);
   }
 
   async function uploadFiles() {
