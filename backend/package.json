@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "swc src -d output && copyfiles generated/* generated/local/** output",
+    "build": "npx prisma generate && npx prisma db push && swc src -d output && copyfiles generated/* generated/local/** output",
     "start": "run-s build start:cached",
     "start:cached": "node -r @swc-node/register -r tsconfig-paths/register output/src/api.js",
     "dev": "tsnd --ignore-watch generated/ --transpile-only --respawn --exit-child --clear -r tsconfig-paths/register src/api.ts",
