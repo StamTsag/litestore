@@ -93,7 +93,11 @@ export default function FolderItem({
   }
 
   function downloadFile() {
-    window.open(`${url}?ik-attachment=true`, "_blank");
+    if (type == "video") {
+      window.open(`${url}`, "_blank");
+    } else {
+      window.open(`${url}?ik-attachment=true`, "_blank");
+    }
   }
 
   const handleDeleteFile = () => {
