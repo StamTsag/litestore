@@ -21,6 +21,7 @@ import {
 
 // Middleware
 import { verifyJWT } from "./middleware/verifyJWT";
+import { keepAlive } from "endpoints/other";
 
 // Target PORT
 const PORT = process.env.PORT || 3001;
@@ -28,8 +29,12 @@ const PORT = process.env.PORT || 3001;
 // Initialise app
 const app = express();
 
+app.get("/keep-alive", keepAlive);
+
 // JSON requests only
 app.use(express.json());
+
+// Keep alive
 
 // Authentication
 app.post("/register", register);
