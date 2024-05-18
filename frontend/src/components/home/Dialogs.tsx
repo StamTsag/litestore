@@ -635,8 +635,6 @@ export default function Dialogs() {
     if (res.status != 200) {
       const resJson = await res.json();
 
-      console.log(resJson);
-
       setError(resJson.failure || resJson.errors[0].message);
 
       setDisabled(false);
