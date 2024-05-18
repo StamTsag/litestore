@@ -1003,18 +1003,9 @@ export default function Dialogs() {
 
             <span className="flex-1" />
 
-            {(type === "pdf" ||
-              type === "code" ||
-              type === "zip" ||
-              type === "executable" ||
-              type === "font" ||
-              type === "other") && (
-              <>
-                <Button variant={"default"} onClick={downloadFile}>
-                  <DownloadIcon className="mr-2" /> Download
-                </Button>
-              </>
-            )}
+            <Button variant={"default"} onClick={downloadFile}>
+              <DownloadIcon className="mr-2" /> Download
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
