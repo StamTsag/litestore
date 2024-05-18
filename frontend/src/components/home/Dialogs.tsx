@@ -962,6 +962,7 @@ export default function Dialogs() {
             </>
           )}
 
+          {/* TODO: PDF Viewer */}
           {type == "pdf" && (
             <>
               <h1 className="xs:text-sm text-lg font-semibold text-center m-10">
@@ -970,6 +971,7 @@ export default function Dialogs() {
             </>
           )}
 
+          {/* TODO: Syntax highlighter*/}
           {type == "code" && (
             <>
               <h1 className="xs:text-sm text-lg font-semibold text-center m-10">
@@ -978,23 +980,10 @@ export default function Dialogs() {
             </>
           )}
 
-          {(type == "zip" || type == "executable") && (
-            <>
-              <h1 className="xs:text-sm text-lg font-semibold text-center m-10">
-                No preview available
-              </h1>
-            </>
-          )}
-
-          {type == "font" && (
-            <>
-              <h1 className="xs:text-sm text-lg font-semibold text-center m-10">
-                No preview available
-              </h1>
-            </>
-          )}
-
-          {type == "other" && (
+          {(type == "zip" ||
+            type == "executable" ||
+            type == "font" ||
+            type == "other") && (
             <>
               <h1 className="xs:text-sm text-lg font-semibold text-center m-10">
                 No preview available
@@ -1015,9 +1004,11 @@ export default function Dialogs() {
             <span className="flex-1" />
 
             {(type === "pdf" ||
-              type === "executable" ||
+              type === "code" ||
               type === "zip" ||
-              type === "font") && (
+              type === "executable" ||
+              type === "font" ||
+              type === "other") && (
               <>
                 <Button variant={"default"} onClick={downloadFile}>
                   <DownloadIcon className="mr-2" /> Download
