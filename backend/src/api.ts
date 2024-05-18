@@ -23,10 +23,10 @@ import {
   renameFolder,
   uploadFile,
 } from "./endpoints/filesystem";
+import { keepAlive } from "./endpoints/other";
 
 // Middleware
 import { verifyJWT } from "./middleware/verifyJWT";
-import { keepAlive } from "endpoints/other";
 
 // Target PORT
 const PORT = process.env.PORT || 3001;
