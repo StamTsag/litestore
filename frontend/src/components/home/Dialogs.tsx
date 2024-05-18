@@ -995,9 +995,11 @@ export default function Dialogs() {
           )}
 
           {type == "other" && (
-            <h1 className="whitespace-pre-wrap max-w-[100%] overflow-hidden">
-              {$fileText}
-            </h1>
+            <>
+              <h1 className="xs:text-sm text-lg font-semibold text-center m-10">
+                No preview available
+              </h1>
+            </>
           )}
 
           <DialogFooter className="items-end">
