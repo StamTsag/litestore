@@ -1,20 +1,21 @@
-"use client";
+import Containers from "@/components/homepage/Containers";
+import Footer from "@/components/homepage/Footer";
+import MainView from "@/components/homepage/MainView";
+import TopNav from "@/components/global/TopNav";
+import WaitingFor from "@/components/homepage/WaitingFor";
 
-import Background from "./components/global/Background";
-import TopBar from "./components/global/TopBar";
-import Index from "./components/Index";
-import Footer from "./components/global/Footer";
-
-export default function RouteIndex() {
+export default function Homepage() {
   return (
-    <div>
-      <Background />
+    <>
+      <TopNav isHomepage />
 
-      <TopBar />
+      <MainView />
 
-      <Index />
+      {/* <Containers /> */}
 
-      <Footer />
-    </div>
+      {/* <WaitingFor /> */}
+
+      <Footer fixed />
+    </>
   );
 }

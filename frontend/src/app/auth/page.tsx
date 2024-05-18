@@ -1,18 +1,25 @@
-import Auth from "../components/Auth";
-import Background from "../components/global/Background";
-import Footer from "../components/global/Footer";
-import TopBarEmpty from "../components/global/TopBarEmpty";
+import { AuthView } from "@/components/auth/AuthView";
+import Footer from "@/components/homepage/Footer";
+import TopNav from "@/components/global/TopNav";
+import { Metadata } from "next";
+import Head from "next/head";
 
-export default function RouteAuth() {
+export const metadata: Metadata = {
+  title: "Litestore | Authentication",
+};
+
+export default function Auth() {
   return (
     <div>
-      <Background />
+      <Head>
+        <title>Litestore | Authentication</title>
+      </Head>
 
-      <TopBarEmpty />
+      <TopNav />
 
-      <Auth />
+      <AuthView />
 
-      <Footer />
+      <Footer fixed />
     </div>
   );
 }

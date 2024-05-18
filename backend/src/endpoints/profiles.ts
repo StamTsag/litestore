@@ -10,8 +10,6 @@ export async function fetchMe(req: Request, res: Response) {
 
     select: {
       identifier: true,
-      username: true,
-      avatar: true,
       createdAt: true,
     },
   });

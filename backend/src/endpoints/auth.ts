@@ -1,32 +1,22 @@
 import { compareSync, hashSync } from "bcrypt";
 import { getParams, getV4, sendError, sendSuccess } from "../utils";
 import { imagekit, prismaClient } from "../vars";
-import { identifierSchema, emailSchema, passwordSchema } from "../schemas";
+import { emailSchema, passwordSchema } from "../schemas";
 import { Request, Response } from "express";
 import { StringSchema } from "@ezier/validate";
 import jwt from "jsonwebtoken";
+import { v4 } from "uuid";
 
-const registerSchema = new StringSchema({
-  ...identifierSchema,
-  ...emailSchema,
-  ...passwordSchema,
-});
-
-const loginSchema = new StringSchema({
+const authSchema = new StringSchema({
   ...emailSchema,
   ...passwordSchema,
 });
 
 export async function register(req: Request, res: Response) {
-  const { identifier, email, password } = getParams(req, [
-    "identifier",
-    "email",
-    "password",
-  ]);
+  const { email, password } = getParams(req, ["email", "password"]);
 
   // Validate params
-  const schemaResult = registerSchema.validate({
-    identifier,
+  const schemaResult = authSchema.validate({
     email,
     password,
   });
@@ -46,16 +36,7 @@ export async function register(req: Request, res: Response) {
     return sendError(400, res, "Email in use");
   }
 
-  // Should be unique identifier aswell
-  const uniqueRes2 = await prismaClient.account.findFirst({
-    where: {
-      identifier,
-    },
-  });
-
-  if (uniqueRes2) {
-    return sendError(400, res, "Identifier in use");
-  }
+  const identifier = v4();
 
   // Create the account
   await prismaClient.account.create({
@@ -75,11 +56,17 @@ export async function register(req: Request, res: Response) {
     },
   });
 
-  const token = jwt.sign({ id: identifier }, process.env.JWT_SECRET, {
+  const accessToken = jwt.sign({ id: identifier }, process.env.JWT_SECRET, {
     algorithm: "HS256",
+    expiresIn: "1h",
   });
 
-  const finalDict = { token };
+  const refreshToken = jwt.sign({ id: identifier }, process.env.JWT_SECRET, {
+    algorithm: "HS256",
+    expiresIn: "7d",
+  });
+
+  const finalDict = { accessToken, refreshToken };
 
   // Info for tests
   if (process.env.NODE_ENV == "test") {
@@ -93,7 +80,7 @@ export async function login(req: Request, res: Response) {
   const { email, password } = getParams(req, ["email", "password"]);
 
   // Validate params
-  const schemaResult = loginSchema.validate({
+  const schemaResult = authSchema.validate({
     email,
     password,
   });
@@ -122,15 +109,25 @@ export async function login(req: Request, res: Response) {
   }
 
   // Send JWT token
-  const token = jwt.sign(
+  const accessToken = jwt.sign(
     { id: accountObj.identifier },
     process.env.JWT_SECRET,
     {
       algorithm: "HS256",
+      expiresIn: "1h",
     }
   );
 
-  const finalDict = { token };
+  const refreshToken = jwt.sign(
+    { id: accountObj.identifier },
+    process.env.JWT_SECRET,
+    {
+      algorithm: "HS256",
+      expiresIn: "7d",
+    }
+  );
+
+  const finalDict = { accessToken, refreshToken };
 
   // Info for tests
   if (process.env.NODE_ENV == "test") {
@@ -217,4 +214,14 @@ export async function deleteAccount(req: Request, res: Response) {
   });
 
   return sendSuccess(res, "Account deleted");
+}
+
+export async function generateAccessToken(req: Request, res: Response) {
+  // Send JWT token
+  const accessToken = jwt.sign({ id: req.userId }, process.env.JWT_SECRET, {
+    algorithm: "HS256",
+    expiresIn: "1h",
+  });
+
+  return sendSuccess(res, { accessToken }, true);
 }

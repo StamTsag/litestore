@@ -6,7 +6,6 @@ import defaults from "superagent-defaults";
 
 const request = defaults(supertest(server));
 
-const identifier = v4().replace(/-/, "").substring(0, 10);
 const email = `${v4()}@gmail.com`;
 const password = v4();
 let token = "";
@@ -15,7 +14,6 @@ let folderId = "";
 describe("Authentication", () => {
   it("Register", async () => {
     const res = await request.post("/register").send({
-      identifier,
       email,
       password,
     });
@@ -56,7 +54,6 @@ describe("Profiles", () => {
 
     expect(profileData).toBeDefined();
 
-    expect(profileData.identifier).toEqual(identifier);
     expect(profileData.createdAt).toBeDefined();
   });
 });

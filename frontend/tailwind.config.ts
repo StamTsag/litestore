@@ -1,54 +1,83 @@
 import type { Config } from "tailwindcss";
 
-const config: Config = {
+const config = {
+  darkMode: ["class"],
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
+  prefix: "",
   theme: {
     extend: {
       colors: {
-        primary: "#00afef",
-        secondary: "#ef4000",
-        "folder-primary": "#f0f0f0",
-        "file-bg": "#eaF6Ff",
-        "file-bg-active": "#eaF8Ff",
-        "dark-half": "rgb(20, 20, 20, 0.9)",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
       },
-
-      boxShadow: {
-        bg: "0 0 20px 0 rgba(0, 0, 0, 0.1)",
-        "bg-white": "0 0 20px 0 rgba(255, 255, 255, 0.075)",
-        "bg-dark": "0 0 20px 0 rgba(0, 0, 0, 0.1)",
-        "bg-dark-sm": "0 0 20px 0 rgba(0, 0, 0, 0.025)",
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "caret-blink": {
+          "0%,70%,100%": { opacity: "1" },
+          "20%,50%": { opacity: "0" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "caret-blink": "caret-blink 1.25s ease-out infinite",
       },
 
       screens: {
-        mobile: {
-          max: "900px",
-        },
-      },
-
-      backgroundImage: {
-        main: "url('/homepage-bg.jpg')",
-      },
-
-      animation: {
-        twirl: "logo-twirl 2.5s ease",
-      },
-
-      keyframes: {
-        "logo-twirl": {
-          "0%": { transform: "translateY(0px)" },
-          "25%": { transform: "translateY(-3px) translateX(2px) scale(0.9)" },
-          "75%": { transform: "translateY(3px) translateX(-2px) scale(0.85)" },
-          "100%": { transform: "translateY(0px)" },
-        },
+        xs: { max: "800px" },
+        mobile: { max: "1075px" },
       },
     },
   },
-  plugins: [],
-};
+  plugins: [require("tailwindcss-animate")],
+} satisfies Config;
 
 export default config;

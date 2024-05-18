@@ -6,7 +6,12 @@ configDotenv();
 import express from "express";
 
 // Endpoints
-import { deleteAccount, login, register } from "./endpoints/auth";
+import {
+  deleteAccount,
+  generateAccessToken,
+  login,
+  register,
+} from "./endpoints/auth";
 import { fetchMe } from "./endpoints/profiles";
 import {
   createFolder,
@@ -42,6 +47,9 @@ app.post("/login", login);
 
 // JWT required for the routes below this middleware
 app.use(verifyJWT);
+
+// Generate access token with refresh token
+app.get("/accessToken", generateAccessToken);
 
 // Profiles
 app.get("/me", fetchMe);

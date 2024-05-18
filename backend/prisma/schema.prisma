@@ -13,10 +13,7 @@ datasource db {
 model Account {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String   @unique
-  username   String   @default("Litestore User")
-  avatar     String   @default("")
   email      String   @unique
-  verified   Boolean  @default(false)
   password   String
   createdAt  DateTime @default(now())
 }

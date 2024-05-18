@@ -1,20 +1,21 @@
 "use client";
 
-import Home from "../components/Home";
 import { useWritable } from "react-use-svelte-store";
 import {
   Folder,
   UserData,
   authenticated,
   folders,
-  isMobile,
   userData,
-} from "../stores";
+} from "@/lib/stores";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Toolbar from "../components/home/Toolbar";
-import Loading from "../components/global/Loading";
 import Cookies from "js-cookie";
+import HomeView from "@/components/home/HomeView";
+import TopNav from "@/components/global/TopNav";
+import Loading from "@/components/global/Loading";
+import Head from "next/head";
+import Dialogs from "@/components/home/Dialogs";
 
 export default function RouteHome() {
   let effectRan = false;
@@ -23,7 +24,31 @@ export default function RouteHome() {
   const [$authenticated, setAuthenticated] = useWritable(authenticated);
   const [_, setUserData] = useWritable(userData);
   const [__, setFolders] = useWritable(folders);
-  const [___, setIsMobile] = useWritable(isMobile);
+
+  async function regenerateAccessToken() {
+    const res = await fetch("api/accessToken", {
+      headers: {
+        Authorization: Cookies.get("refreshToken") as string,
+      },
+    });
+
+    if (res.status != 200) {
+      Cookies.remove("refreshToken");
+      Cookies.remove("accessToken");
+
+      router.replace("/auth");
+
+      return;
+    }
+
+    Cookies.set(
+      "accessToken",
+      `Bearer ${(await res.json()).accessToken as string}`,
+      {
+        expires: new Date(new Date().getTime() + 60 * 60 * 1000),
+      }
+    );
+  }
 
   async function fetchUserData() {
     // Get self data
@@ -31,7 +56,7 @@ export default function RouteHome() {
       await (
         await fetch("api/me", {
           headers: {
-            Authorization: Cookies.get("litestore_token") as string,
+            Authorization: Cookies.get("accessToken") as string,
           },
         })
       ).json()
@@ -39,7 +64,7 @@ export default function RouteHome() {
 
     // Invalid token, re-auth
     if (!userData) {
-      Cookies.remove("litestore_token");
+      Cookies.remove("accessToken");
 
       router.replace("/auth");
 
@@ -55,7 +80,7 @@ export default function RouteHome() {
       await (
         await fetch(`api/folders`, {
           headers: {
-            Authorization: Cookies.get("litestore_token") as string,
+            Authorization: Cookies.get("accessToken") as string,
           },
         })
       ).json()
@@ -69,36 +94,50 @@ export default function RouteHome() {
 
     effectRan = true;
 
-    const userAgent = window.navigator.userAgent.toLowerCase();
-
-    setIsMobile(userAgent.includes("android") || userAgent.includes("iphone"));
-
     // No token, auth
-    if (!Cookies.get("litestore_token")) {
+    if (!Cookies.get("refreshToken")) {
       router.replace("/auth");
       return;
     }
 
-    fetchUserData().then((data) => {
-      if (!data) return;
+    // Refresh token automatically
+    const tokenInterval = setInterval(async () => {
+      if (!Cookies.get("refreshToken")) {
+        clearInterval(tokenInterval);
+        return;
+      }
 
-      setUserData({ ...(data as UserData) });
+      await regenerateAccessToken();
+    }, 60 * 60 * 1000);
 
-      fetchHome().then(({ folders }) => {
-        setFolders(folders);
+    regenerateAccessToken().then(() => {
+      fetchUserData().then((data) => {
+        if (!data) return;
 
-        setAuthenticated(true);
+        setUserData({ ...(data as UserData) });
+
+        fetchHome().then(({ folders }) => {
+          setFolders(folders);
+
+          setAuthenticated(true);
+        });
       });
     });
   }, []);
 
   return (
-    <div className="bg-white w-screen h-screen">
+    <div className="w-screen h-screen overflow-hidden">
+      <Head>
+        <title>Litestore | Home</title>
+      </Head>
+
       {$authenticated ? (
         <>
-          <Toolbar />
+          <TopNav notFixed forceShowSheet />
 
-          <Home />
+          <HomeView />
+
+          <Dialogs />
         </>
       ) : (
         <Loading />

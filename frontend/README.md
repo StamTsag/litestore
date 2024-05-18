@@ -1,5 +1,5 @@
 <p align='center'>
-    <img width='128' height='128' src='https://litestore.shadofer.com/icon.png' alt='Litestore logo' />
+    <img width='128' height='128' src='https://litestore.shadofer.com/favicon.ico' alt='Litestore logo' />
 </p>
 
 <p align='center'>
@@ -12,10 +12,4 @@
 
 - `npm i`
 
-- Fill out `.env.example` and rename to `.env`
-
-- `npm run dev`, starts at port 3000
-
-## Preview
-
-<img src="https://raw.githubusercontent.com/Shadofer/litestore/master/.github/assets/preview.png" alt='Litestore preview'>
+- `npm dev`, starts at port 3001

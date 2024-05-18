@@ -1,13 +1,5 @@
 import { EzierValidatorStringSchema } from "@ezier/validate";
 
-export const identifierSchema: { identifier: EzierValidatorStringSchema } = {
-  identifier: {
-    minLength: 3,
-    maxLength: 20,
-    regex: /[a-zA-Z0-9]+/,
-  },
-};
-
 export const emailSchema: { email: EzierValidatorStringSchema } = {
   email: {
     type: "email",

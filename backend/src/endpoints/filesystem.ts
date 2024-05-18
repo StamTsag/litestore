@@ -332,6 +332,10 @@ export async function uploadFile(req: Request, res: Response) {
     },
   });
 
+  if (files.map((v) => v.fileId).includes(fileId)) {
+    return sendError(400, res, "File id in use.");
+  }
+
   // Max files
   if (files.length == maxFolderFiles) {
     return sendError(

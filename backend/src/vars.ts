@@ -16,7 +16,7 @@ export const maxFolders = 25;
 export const maxFolderFiles = 200;
 
 // 25 MB
-export const imagekitMaxSize = 25 * 1000 * 1000;
+export const imagekitMaxSize = 25 * 1024 * 1024;
 
 // 500 MB
-export const maxSize = 500 * 1000 * 1000;
+export const maxSize = 500 * 1024 * 1024;
