@@ -8,7 +8,8 @@ const request = defaults(supertest(server));
 
 const email = `${v4()}@gmail.com`;
 const password = v4();
-let token = "";
+let accessToken = "";
+let refreshToken = "";
 let folderId = "";
 
 describe("Authentication", () => {
@@ -20,7 +21,8 @@ describe("Authentication", () => {
 
     expect(res.status).toEqual(200);
     expect(res.type).toEqual(expect.stringContaining("json"));
-    expect(res.body).toHaveProperty("token");
+    expect(res.body).toHaveProperty("accessToken");
+    expect(res.body).toHaveProperty("refreshToken");
     expect(res.body).toHaveProperty("id");
   });
 
@@ -32,13 +34,30 @@ describe("Authentication", () => {
 
     expect(res.status).toEqual(200);
     expect(res.type).toEqual(expect.stringContaining("json"));
-    expect(res.body).toHaveProperty("token");
+    expect(res.body).toHaveProperty("accessToken");
+    expect(res.body).toHaveProperty("refreshToken");
     expect(res.body).toHaveProperty("id");
 
-    token = `Bearer ${res.body.token}`;
+    accessToken = `Bearer ${res.body.accessToken}`;
+    refreshToken = `Bearer ${res.body.refreshToken}`;
+
+    // For the accessToken test below
+    request.set({
+      Authorization: refreshToken,
+    });
+  });
+
+  it("Regenerate access token", async () => {
+    const res = await request.get("/accessToken");
+
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual(expect.stringContaining("json"));
+    expect(res.body).toHaveProperty("accessToken");
+
+    accessToken = `Bearer ${res.body.accessToken}`;
 
     request.set({
-      Authorization: token,
+      Authorization: accessToken,
     });
   });
 });
@@ -100,9 +119,7 @@ describe("Filesystem", () => {
   });
 
   it("Delete folder", async () => {
-    const res = await request.delete(`/folders/${folderId}`).send({
-      token,
-    });
+    const res = await request.delete(`/folders/${folderId}`);
 
     expect(res.status).toEqual(200);
     expect(res.type).toEqual(expect.stringContaining("json"));
