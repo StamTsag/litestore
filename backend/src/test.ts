@@ -11,6 +11,7 @@ const password = v4();
 let accessToken = "";
 let refreshToken = "";
 let folderId = "";
+let fileId = "";
 
 describe("Authentication", () => {
   it("Register", async () => {
@@ -77,7 +78,7 @@ describe("Profiles", () => {
   });
 });
 
-describe("Filesystem", () => {
+describe("Folders", () => {
   it("Get home folders", async () => {
     const res = await request.get("/folders");
 
@@ -109,8 +110,10 @@ describe("Filesystem", () => {
     expect(res.type).toEqual(expect.stringContaining("json"));
     expect(res.body).toHaveProperty("success");
   });
+});
 
-  it("Get folder files", async () => {
+describe("Files", () => {
+  it("Get files", async () => {
     const res = await request.get(`/files/${folderId}`);
 
     expect(res.status).toEqual(200);
@@ -118,8 +121,26 @@ describe("Filesystem", () => {
     expect(res.body).toHaveProperty("files");
   });
 
-  it("Delete folder", async () => {
-    const res = await request.delete(`/folders/${folderId}`);
+  it("Upload file", async () => {
+    fileId = v4();
+
+    const res = await request.post(`/files/${folderId}`).send({
+      fileId,
+      name: "file.txt",
+      size: 1024 * 1024,
+      // prop url
+      url: `https://ik.imagekit.io/litestore/cb7e7889476c-46c0-8260-f1f864bc3022/cab6b15c-e55f-4ba3-8fa8-8d01da8711f5/file.txt`,
+      width: -1,
+      height: -1,
+    });
+
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual(expect.stringContaining("json"));
+    expect(res.body).toHaveProperty("file");
+  });
+
+  it("Delete file", async () => {
+    const res = await request.delete(`/files/${folderId}/${fileId}`);
 
     expect(res.status).toEqual(200);
     expect(res.type).toEqual(expect.stringContaining("json"));
@@ -127,8 +148,26 @@ describe("Filesystem", () => {
   });
 });
 
+describe("Extras", () => {
+  it("Get data usage", async () => {
+    const res = await request.get(`/usage`);
+
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual(expect.stringContaining("json"));
+    expect(res.body).toHaveProperty("totalUsage");
+  });
+});
+
 describe("Finalise", () => {
-  it("Delete account", async () => {
+  it("Delete folder", async () => {
+    const res = await request.delete(`/folders/${folderId}`);
+
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual(expect.stringContaining("json"));
+    expect(res.body).toHaveProperty("success");
+  });
+
+  it("Terminate account", async () => {
     const res = await request.delete("/login").send({
       password,
     });

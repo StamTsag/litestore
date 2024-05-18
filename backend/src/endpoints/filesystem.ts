@@ -459,11 +459,14 @@ export async function deleteFile(req: Request, res: Response) {
     },
   });
 
-  const fileRes = await imagekit.listFiles({
-    path: `/${folderId}/${fileId}`,
-  });
+  // Not available in test mode
+  if (process.env.NODE_ENV !== "test") {
+    const fileRes = await imagekit.listFiles({
+      path: `/${folderId}/${fileId}`,
+    });
 
-  await imagekit.deleteFile(fileRes[0].fileId);
+    await imagekit.deleteFile(fileRes[0].fileId);
+  }
 
   return sendSuccess(res, "File deleted");
 }
