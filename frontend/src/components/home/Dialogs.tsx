@@ -941,7 +941,7 @@ export default function Dialogs() {
 
           {(type == "image" || (type == "video" && name.endsWith(".gif"))) && (
             <img
-              src={`${url}/tr:q-25`}
+              src={`${url}`}
               alt={name}
               className={`transition-[100ms] rounded-[10px]`}
               draggable={false}
