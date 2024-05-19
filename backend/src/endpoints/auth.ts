@@ -185,9 +185,12 @@ export async function deleteAccount(req: Request, res: Response) {
     const target = folders[folderIndex];
     const folderId = target.folderId;
 
-    try {
-      await imagekit.deleteFolder(folderId);
-    } catch (e) {}
+    // Not available in test mode
+    if (process.env.NODE_ENV !== "test") {
+      try {
+        await imagekit.deleteFolder(folderId);
+      } catch (e) {}
+    }
 
     // Delete all files
     await prismaClient.file.deleteMany({

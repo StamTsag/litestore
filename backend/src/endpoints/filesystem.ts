@@ -189,10 +189,13 @@ export async function deleteFolder(req: Request, res: Response) {
     return sendError(400, res, "You don't have access to this folder");
   }
 
-  // Delete folder
-  try {
-    await imagekit.deleteFolder(folderId);
-  } catch (e) {}
+  // Not available in test mode
+  if (process.env.NODE_ENV !== "test") {
+    // Delete folder
+    try {
+      await imagekit.deleteFolder(folderId);
+    } catch (e) {}
+  }
 
   // Delete all files
   await prismaClient.file.deleteMany({
