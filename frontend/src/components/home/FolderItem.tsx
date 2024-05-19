@@ -97,7 +97,7 @@ export default function FolderItem(props: any) {
 
   return (
     <div
-      className={`xs:max-w-[80px] xs:w-[80px] flex flex-col flex-wrap items-center max-w-[100px] w-[100px] overflow-hidden m-2 mt-0 mb-0 select-none`}
+      className={`xs:max-w-[64px] xs:w-[64px] flex flex-col flex-wrap items-center max-w-[100px] w-[100px] overflow-hidden m-2 mt-0 mb-0 select-none`}
       key={folder.folderId}
     >
       <ContextMenu>
@@ -144,9 +144,8 @@ export default function FolderItem(props: any) {
 
       <h1
         className={`${
-          $selectedFolder == folder &&
-          "bg-[hsl(var(--folder))] pr-1.5 pl-1.5 text-white"
-        } text-sm font-medium text-center rounded-[10px] pr-1 pl-1 max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap mb-4 translate-y-[-5px]`}
+          $selectedFolder == folder && "bg-[hsl(var(--folder))] text-white"
+        } xs:text-xs text-sm font-medium text-center rounded-[10px] pr-1 pl-1 max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap mb-4 translate-y-[-5px]`}
       >
         {folder.title}
       </h1>

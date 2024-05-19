@@ -69,16 +69,8 @@ export default function TopNav({
   const [______, setFolders] = useWritable(folders);
   const [_______, setAuthenticated] = useWritable(authenticated);
 
-  const headers: TopNavHeader[] = [
-    {
-      title: "Features",
-      ref: "features",
-    },
-    {
-      title: "Try it",
-      ref: "try",
-    },
-  ];
+  // TODO: Add again
+  const headers: TopNavHeader[] = [];
 
   function scrollTop() {
     window.scrollTo({

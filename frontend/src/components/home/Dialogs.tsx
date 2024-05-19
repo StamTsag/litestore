@@ -943,7 +943,7 @@ export default function Dialogs() {
             <img
               src={`${url}`}
               alt={name}
-              className={`transition-[100ms] rounded-[10px]`}
+              className={`xs:w-[50%] xs:h-[50%] transition-[100ms] rounded-[10px]`}
               draggable={false}
               width={width}
               height={height}

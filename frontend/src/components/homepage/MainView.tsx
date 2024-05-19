@@ -16,7 +16,7 @@ export default function MainView() {
   }, []);
 
   return (
-    <div className="h-[100vh] w-full flex flex-col items-center justify-center text-center">
+    <div className="xs:h-[90vh] xs:overflow-hidden h-[100vh] w-full flex flex-col items-center justify-center text-center">
       <h1 className="xs:text-[1.7rem] font-extrabold text-5xl tracking-tighter pb-3">
         Lite-weight cloud-based file storage.
       </h1>
