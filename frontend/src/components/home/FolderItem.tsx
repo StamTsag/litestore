@@ -105,7 +105,7 @@ export default function FolderItem(props: any) {
           <svg
             onClick={updateSelectedFolder}
             onDoubleClick={openFolder}
-            className={`hover:brightness-[108%] min-w-[76px] w-[76px] h-[76px] min-h-[76px] cursor-pointer`}
+            className={`xs:min-w-[64px] xs:w-[64px] xs:min-h-[64px] xs:h-[64px] hover:brightness-[108%] min-w-[76px] w-[76px] h-[76px] min-h-[76px] cursor-pointer`}
             xmlns="http://www.w3.org/2000/svg"
             width="32"
             height="32"

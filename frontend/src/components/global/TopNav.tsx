@@ -210,9 +210,7 @@ export default function TopNav({
                           className="w-[80%] text-start"
                           onClick={handleHome}
                           variant={`${
-                            $sideOption == SideOption.Home
-                              ? "secondary"
-                              : "outline"
+                            !$currentFolderId ? "secondary" : "outline"
                           }`}
                         >
                           <HomeIcon className="min-w-[18px] min-h-[18px] mr-2" />

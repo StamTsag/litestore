@@ -154,13 +154,13 @@ export default function SelectedFileItem({
         </svg>
       )}
 
-      <h1 className="xs:text-[0.6rem] xs:max-w-[25%] ml-1 text-sm max-w-[55%] overflow-hidden whitespace-nowrap text-ellipsis">
+      <h1 className="xs:text-[0.8rem] xs:max-w-[20vw] ml-1 text-sm max-w-[55%] overflow-hidden whitespace-nowrap text-ellipsis">
         {filename}
       </h1>
 
       <span className="flex-1" />
 
-      <h1 className="xs:text-xs mr-2 text-sm tracking-tighter">
+      <h1 className="xs:text-[0.7rem] mr-2 text-sm tracking-tighter">
         {formatBytes(size)}
       </h1>
 

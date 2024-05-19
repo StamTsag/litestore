@@ -837,7 +837,7 @@ export default function Dialogs() {
               <PlusIcon className="mr-2" /> Add files
             </Button>
 
-            <div className="flex-1 flex items-center justify-center h-full font-medium text-sm tracking-tight">
+            <div className="xs:text-xs flex-1 flex items-center justify-center h-full font-medium text-sm tracking-tight">
               {disabled &&
                 Math.round($timeRemaining) > 0 &&
                 percentageUploaded != 100 && (
@@ -943,7 +943,7 @@ export default function Dialogs() {
             <img
               src={`${url}`}
               alt={name}
-              className={`xs:w-[50%] xs:h-[50%] transition-[100ms] rounded-[10px]`}
+              className={`xs:max-w-[85vw] transition-[100ms] rounded-[10px]`}
               draggable={false}
               width={width}
               height={height}
