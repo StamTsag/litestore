@@ -934,7 +934,7 @@ export default function Dialogs() {
       <Dialog open={$viewingFile} onOpenChange={setViewingFile}>
         <DialogContent className="overflow-hidden">
           <DialogHeader>
-            <DialogTitle className="max-w-[400px] pb-2 translate-y-[-8px] overflow-hidden text-ellipsis whitespace-nowrap">
+            <DialogTitle className="xs:max-w-[300px] max-w-[400px] pb-2 translate-y-[-8px] overflow-hidden text-ellipsis whitespace-nowrap">
               {$targetFile?.name}
             </DialogTitle>
           </DialogHeader>
