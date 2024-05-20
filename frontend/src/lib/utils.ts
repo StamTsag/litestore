@@ -44,7 +44,7 @@ export function getFileType(name: string): FileType {
 }
 
 export function formatBytes(bytes: number): string {
-  if (!+bytes) return "0 Bytes";
+  if (!+bytes) return "0 B";
 
   const k = 1024;
   const sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
