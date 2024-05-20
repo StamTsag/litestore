@@ -874,7 +874,7 @@ export default function Dialogs() {
                   {$usageLoaded
                     ? `${formatBytes(
                         $totalUsage
-                      )} / 500MB (${$usagePercentage}%)`
+                      )} / 500 MB (${$usagePercentage}%)`
                     : "Calculating usage..."}
                 </h1>
               </div>
