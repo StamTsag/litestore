@@ -683,6 +683,7 @@ export default function Dialogs() {
     }
 
     setDeletingFile(false);
+    setDisabled(false);
   }
 
   function downloadFile() {
