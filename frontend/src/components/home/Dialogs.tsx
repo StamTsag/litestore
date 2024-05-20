@@ -598,12 +598,7 @@ export default function Dialogs() {
   }, [$uploadingFiles]);
 
   useEffect(() => {
-    if (!$viewingUsage) {
-      setTimeout(() => {
-        setTotalUsage(0);
-        setUsagePercentage(0);
-      }, 150);
-    } else {
+    if ($viewingUsage) {
       loadUsage();
     }
   }, [$viewingUsage]);
