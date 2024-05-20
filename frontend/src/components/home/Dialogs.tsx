@@ -544,7 +544,9 @@ export default function Dialogs() {
             }
           }
 
-          setFiles([...$files, ...filesToAdd]);
+          if ($currentFolderId) {
+            setFiles([...$files, ...filesToAdd]);
+          }
 
           setSelectedFiles([]);
 
