@@ -154,7 +154,7 @@ export default function SelectedFileItem({
         </svg>
       )}
 
-      <h1 className="xs:text-[0.8rem] xs:max-w-[20vw] ml-1 text-sm max-w-[55%] overflow-hidden whitespace-nowrap text-ellipsis">
+      <h1 className="xs:text-[0.8rem] xs:max-w-[20vw] ml-1 text-sm max-w-[200px] overflow-hidden whitespace-nowrap text-ellipsis">
         {filename}
       </h1>
 
