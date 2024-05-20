@@ -44,7 +44,7 @@ export default function HomeContent() {
             </>
           )}
 
-          {$files.length > 0 && (
+          {$files.length > 0 && $currentFolderId && (
             <div className="flex flex-wrap">
               <>
                 {$files.map((file) => {
