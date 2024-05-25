@@ -48,7 +48,6 @@ import {
 } from "@radix-ui/react-icons";
 import SelectedFileItem from "./SelectedFileItem";
 import { Progress } from "../ui/progress";
-import SyntaxHighlighter from "react-syntax-highlighter";
 
 export default function Dialogs() {
   const $targetFolder = useReadable(targetFolder);
@@ -181,9 +180,24 @@ export default function Dialogs() {
   }
 
   async function deleteFolder() {
-    setDisabled(true);
+    setDeletingFolder(false);
+    setDisabled(false);
 
     const folder = $targetFolder;
+
+    for (const folderIndex in $folders) {
+      const target = $folders[Number(folderIndex)];
+
+      if (target.folderId == folder.folderId) {
+        const newFolders = $folders.filter(
+          (val) => val.folderId != folder.folderId
+        );
+
+        setFolders(newFolders);
+
+        break;
+      }
+    }
 
     const res = await fetch(`api/folders/${folder.folderId}`, {
       method: "DELETE",
@@ -191,25 +205,6 @@ export default function Dialogs() {
         Authorization: Cookies.get("accessToken") as string,
       },
     });
-
-    if (res.status == 200) {
-      for (const folderIndex in $folders) {
-        const target = $folders[Number(folderIndex)];
-
-        if (target.folderId == folder.folderId) {
-          const newFolders = $folders.filter(
-            (val) => val.folderId != folder.folderId
-          );
-
-          setFolders(newFolders);
-
-          break;
-        }
-      }
-    }
-
-    setDeletingFolder(false);
-    setDisabled(false);
   }
 
   useEffect(() => {

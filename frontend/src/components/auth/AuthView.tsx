@@ -31,6 +31,12 @@ export function AuthView() {
     // Data validation
     if (!email || !password) return;
 
+    if (password.length < 8) {
+      setError("Password must contain atleast 8 characters");
+
+      return;
+    }
+
     setDisabled(true);
 
     const res = await (
@@ -66,6 +72,12 @@ export function AuthView() {
   async function login() {
     // Data validation
     if (!email || !password) return;
+
+    if (password.length < 8) {
+      setError("Password must contain atleast 8 characters");
+
+      return;
+    }
 
     setDisabled(true);
 

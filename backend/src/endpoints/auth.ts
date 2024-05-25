@@ -1,28 +1,29 @@
 import { compareSync, hashSync } from "bcrypt";
 import { getParams, getV4, sendError, sendSuccess } from "../utils";
 import { imagekit, prismaClient } from "../vars";
-import { emailSchema, passwordSchema } from "../schemas";
 import { Request, Response } from "express";
-import { StringSchema } from "@ezier/validate";
 import jwt from "jsonwebtoken";
 import { v4 } from "uuid";
+import { email, password } from "../schemas";
+import { object } from "zod";
 
-const authSchema = new StringSchema({
-  ...emailSchema,
-  ...passwordSchema,
-});
+const registerSchema = object({ email, password });
+
+const loginSchema = object({ email, password });
+
+const deleteAccountSchema = object({ password });
 
 export async function register(req: Request, res: Response) {
   const { email, password } = getParams(req, ["email", "password"]);
 
   // Validate params
-  const schemaResult = authSchema.validate({
+  const schemaResult = registerSchema.safeParse({
     email,
     password,
   });
 
-  if (schemaResult.length != 0) {
-    return sendError(400, res, schemaResult, true);
+  if (!schemaResult.success) {
+    return sendError(400, res, schemaResult.error.errors, true);
   }
 
   // Should be unique email
@@ -80,13 +81,13 @@ export async function login(req: Request, res: Response) {
   const { email, password } = getParams(req, ["email", "password"]);
 
   // Validate params
-  const schemaResult = authSchema.validate({
+  const schemaResult = loginSchema.safeParse({
     email,
     password,
   });
 
-  if (schemaResult.length != 0) {
-    return sendError(400, res, schemaResult, true);
+  if (!schemaResult.success) {
+    return sendError(400, res, schemaResult.error.errors, true);
   }
 
   // Check if it's a valid account
@@ -153,12 +154,12 @@ export async function deleteAccount(req: Request, res: Response) {
   const password = req.body.password;
 
   // Validate params
-  const schemaResult = new StringSchema(passwordSchema).validate({
+  const schemaResult = deleteAccountSchema.safeParse({
     password,
   });
 
-  if (schemaResult.length != 0) {
-    return sendError(400, res, schemaResult, true);
+  if (!schemaResult.success) {
+    return sendError(400, res, schemaResult.error.errors, true);
   }
 
   // Validate the password

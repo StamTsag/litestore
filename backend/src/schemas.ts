@@ -1,64 +1,21 @@
-import { EzierValidatorStringSchema } from "@ezier/validate";
+import { number, string } from "zod";
 
-export const emailSchema: { email: EzierValidatorStringSchema } = {
-  email: {
-    type: "email",
-  },
-};
+export const email = string().email();
 
-export const passwordSchema: { password: EzierValidatorStringSchema } = {
-  password: {
-    minLength: 8,
-  },
-};
+export const password = string().min(8);
 
-export const folderIdSchema: { folderId: EzierValidatorStringSchema } = {
-  folderId: {
-    regex: /[a-zA-Z0-9]+/,
-  },
-};
+export const idSchema = string().regex(/[a-zA-Z0-9]+/);
 
-export const folderTitleSchema: { title: EzierValidatorStringSchema } = {
-  title: {
-    maxLength: 30,
-  },
-};
+export const titleSchema = string().max(30);
 
-export const fileIdSchema: { fileId: EzierValidatorStringSchema } = {
-  fileId: {
-    regex: /[a-zA-Z0-9]+/,
-  },
-};
+export const nameSchema = string().max(256);
 
-export const fileNameSchema: { name: EzierValidatorStringSchema } = {
-  name: {
-    maxLength: 256,
-  },
-};
+export const sizeSchema = number();
 
-export const fileSizeSchema: { size: EzierValidatorStringSchema } = {
-  size: {
-    regex: /[0-9]+/,
-  },
-};
+export const urlSchema = string().regex(
+  /https:\/\/ik.imagekit.io\/litestore\/[0-9A-Za-z]{12}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{12}\/[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{12}\/[a-zA-Z0-9-.?=_]+/
+);
 
-export const fileUrlSchema: { url: EzierValidatorStringSchema } = {
-  url: {
-    regex:
-      /https:\/\/ik.imagekit.io\/litestore\/[0-9A-Za-z]{12}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{12}\/[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{12}\/[a-zA-Z0-9-.?=_]+/,
-  },
-};
+export const widthSchema = number().optional();
 
-export const fileWidthSchema: { width: EzierValidatorStringSchema } = {
-  width: {
-    regex: /[0-9]+/,
-    optional: true,
-  },
-};
-
-export const fileHeightSchema: { height: EzierValidatorStringSchema } = {
-  height: {
-    regex: /[0-9]+/,
-    optional: true,
-  },
-};
+export const heightSchema = number().optional();

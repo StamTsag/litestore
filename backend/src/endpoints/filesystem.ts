@@ -8,17 +8,37 @@ import {
   maxSize,
   prismaClient,
 } from "../vars";
-import { StringSchema } from "@ezier/validate";
+
+import { object } from "zod";
 import {
-  fileHeightSchema,
-  fileIdSchema,
-  fileNameSchema,
-  fileSizeSchema,
-  fileUrlSchema,
-  fileWidthSchema,
-  folderIdSchema,
-  folderTitleSchema,
+  idSchema,
+  nameSchema as name,
+  sizeSchema as size,
+  titleSchema as title,
+  urlSchema as url,
+  widthSchema as width,
+  heightSchema as height,
 } from "../schemas";
+
+const createFolderSchema = object({ title });
+
+const renameFolderSchema = object({ folderId: idSchema, title });
+
+const deleteFolderSchema = object({ folderId: idSchema });
+
+const fetchFilesSchema = object({ folderId: idSchema });
+
+const uploadFileSchema = object({
+  folderId: idSchema,
+  fileId: idSchema,
+  name,
+  size,
+  url,
+  width,
+  height,
+});
+
+const deleteFileSchema = object({ folderId: idSchema, fileId: idSchema });
 
 export async function fetchFoldersHome(req: Request, res: Response) {
   return sendSuccess(
@@ -44,12 +64,12 @@ export async function fetchFoldersHome(req: Request, res: Response) {
 export async function createFolder(req: Request, res: Response) {
   const title = req.body.title;
 
-  const schemaResult = new StringSchema({ ...folderTitleSchema }).validate({
+  const schemaResult = createFolderSchema.safeParse({
     title,
   });
 
-  if (schemaResult.length != 0) {
-    return sendError(400, res, schemaResult, true);
+  if (!schemaResult.success) {
+    return sendError(400, res, schemaResult.error.errors, true);
   }
 
   const folders = await prismaClient.folder.findMany({
@@ -95,16 +115,13 @@ export async function renameFolder(req: Request, res: Response) {
   const folderId = req.params.folderId;
   const title = req.body.title;
 
-  const schemaResult = new StringSchema({
-    ...folderIdSchema,
-    ...folderTitleSchema,
-  }).validate({
+  const schemaResult = renameFolderSchema.safeParse({
     folderId,
     title,
   });
 
-  if (schemaResult.length != 0) {
-    return sendError(400, res, schemaResult, true);
+  if (!schemaResult.success) {
+    return sendError(400, res, schemaResult.error.errors, true);
   }
 
   // Check folder
@@ -161,12 +178,12 @@ export async function renameFolder(req: Request, res: Response) {
 export async function deleteFolder(req: Request, res: Response) {
   const folderId = req.params.folderId;
 
-  const schemaResult = new StringSchema({ ...folderIdSchema }).validate({
+  const schemaResult = deleteFolderSchema.safeParse({
     folderId,
   });
 
-  if (schemaResult.length != 0) {
-    return sendError(400, res, schemaResult, true);
+  if (!schemaResult.success) {
+    return sendError(400, res, schemaResult.error.errors, true);
   }
 
   // Check folder
@@ -217,12 +234,12 @@ export async function deleteFolder(req: Request, res: Response) {
 export async function fetchFiles(req: Request, res: Response) {
   const folderId = req.params.folderId;
 
-  const schemaResult = new StringSchema({ ...folderIdSchema }).validate({
+  const schemaResult = fetchFilesSchema.safeParse({
     folderId,
   });
 
-  if (schemaResult.length != 0) {
-    return sendError(400, res, schemaResult, true);
+  if (!schemaResult.success) {
+    return sendError(400, res, schemaResult.error.errors, true);
   }
 
   // Check folder
@@ -282,15 +299,7 @@ export async function uploadFile(req: Request, res: Response) {
   const width = req.body.width;
   const height = req.body.height;
 
-  const schemaResult = new StringSchema({
-    ...folderIdSchema,
-    ...fileIdSchema,
-    ...fileNameSchema,
-    ...fileSizeSchema,
-    ...fileUrlSchema,
-    ...fileWidthSchema,
-    ...fileHeightSchema,
-  }).validate({
+  const schemaResult = uploadFileSchema.safeParse({
     folderId,
     fileId,
     name,
@@ -300,8 +309,8 @@ export async function uploadFile(req: Request, res: Response) {
     height,
   });
 
-  if (schemaResult.length != 0) {
-    return sendError(400, res, schemaResult, true);
+  if (!schemaResult.success) {
+    return sendError(400, res, schemaResult.error.errors, true);
   }
 
   // Check folder
@@ -423,16 +432,13 @@ export async function deleteFile(req: Request, res: Response) {
   const folderId = req.params.folderId;
   const fileId = req.params.fileId;
 
-  const schemaResult = new StringSchema({
-    ...folderIdSchema,
-    ...fileIdSchema,
-  }).validate({
+  const schemaResult = deleteFileSchema.safeParse({
     folderId,
     fileId,
   });
 
-  if (schemaResult.length != 0) {
-    return sendError(400, res, schemaResult, true);
+  if (!schemaResult.success) {
+    return sendError(400, res, schemaResult.error.errors, true);
   }
 
   // Check file
