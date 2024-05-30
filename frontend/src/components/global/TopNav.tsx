@@ -138,7 +138,7 @@ export default function TopNav({
                   <div className="flex items-center">
                     {!isInHome && (
                       <>
-                        <Link href="https://shadofer.com">
+                        <Link href="https://stamtsag.com">
                           <img
                             src="/stamtsag.ico"
                             className="w-[28px] h-[28px] mr-2 cursor-pointer"
@@ -299,7 +299,7 @@ export default function TopNav({
 
         {isHomepage ? (
           <>
-            <Link href="https://shadofer.com">
+            <Link href="https://stamtsag.com">
               <img
                 src="/stamtsag.ico"
                 className="xs:hidden w-[28px] h-[28px] mr-2 cursor-pointer"
@@ -377,7 +377,7 @@ export default function TopNav({
         )}
 
         <a
-          href="https://github.com/Shadofer/litestore"
+          href="https://github.com/StamTsag/litestore"
           target="_blank"
           className="mr-2"
         >

@@ -33,7 +33,7 @@ export default function MainView() {
           </Button>
         </Link>
 
-        <Link href="https://github.com/Shadofer/litestore" target="_blank">
+        <Link href="https://github.com/StamTsag/litestore" target="_blank">
           <Button
             variant={"outline"}
             size="lg"

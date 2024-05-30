@@ -1,5 +1,5 @@
 <p align='center'>
-    <img width='128' height='128' src='https://litestore.shadofer.com/icon.png' alt='Litestore logo' />
+    <img width='128' height='128' src='https://litestore.stamtsag.com/favicon.ico' alt='Litestore logo' />
 </p>
 
 <p align='center'>

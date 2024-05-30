@@ -25,7 +25,7 @@ export default function RootLayout({
         />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://litestore.shadofer.com/" />
+        <meta property="og:url" content="https://litestore.stamtsag.com/" />
         <meta property="og:title" content="Litestore" />
         <meta
           property="og:description"
@@ -33,13 +33,13 @@ export default function RootLayout({
         />
         <meta
           property="og:image"
-          content="https://litestore.shadofer.com/embed.png"
+          content="https://litestore.stamtsag.com/embed.png"
         />
 
         <meta property="twitter:card" content="summary_large_image" />
         <meta
           property="twitter:url"
-          content="https://litestore.shadofer.com/"
+          content="https://litestore.stamtsag.com/"
         />
         <meta property="twitter:title" content="Litestore" />
         <meta
@@ -48,7 +48,7 @@ export default function RootLayout({
         />
         <meta
           property="twitter:image"
-          content="https://litestore.shadofer.com/embed.png"
+          content="https://litestore.stamtsag.com/embed.png"
         />
       </head>
       <body className={font.className}>
